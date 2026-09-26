@@ -1,7 +1,7 @@
 import { ArrowLeft, ArrowUpRight, Check, Globe, Monitor, ShieldCheck, Smartphone, Swords } from 'lucide-react';
 import { motion, useReducedMotion, useScroll, useTransform } from 'motion/react';
 import { useRef, useState } from 'react';
-import { Link, useParams } from 'react-router';
+import { Link, useNavigate, useParams } from 'react-router';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/Button';
 import { Price } from '@/components/ui/Price';
@@ -12,6 +12,7 @@ import { useSession } from '@/lib/session';
 import { useAuthDialog } from '@/features/auth/authDialogStore';
 import { ChallengeDialog } from '@/features/concept/ChallengeDialog';
 import { isConcept } from '@/features/concept/flag';
+import { CONCEPT_PLAYABLE } from '@/features/concept/PlayPage';
 import { CheckoutDialog } from './CheckoutDialog';
 import { GameCard } from './GameCard';
 import { GameCover } from './GameCover';
@@ -28,6 +29,7 @@ export default function GameDetailPage() {
   const token = useSession((s) => s.token);
   const showAuth = useAuthDialog((s) => s.show);
   const claim = useClaimGame();
+  const navigate = useNavigate();
   const [checkout, setCheckout] = useState(false);
   const [challenge, setChallenge] = useState(false);
 
@@ -64,8 +66,12 @@ export default function GameDetailPage() {
     if (url) window.open(url, '_blank', 'noopener,noreferrer');
   };
 
+  // Concept mode: staged studio screens stand in for the partner's site.
+  const conceptPlay = isConcept() && CONCEPT_PLAYABLE.includes(game.slug);
+
   const primary = () => {
     if (!token) return showAuth({ returnTo: `/games/${game.slug}` });
+    if (conceptPlay) return navigate(`/concept/play/${game.slug}`);
     if (owned) return play();
     if (isFree(game.priceLamports)) {
       return claim.mutate(game.id, {
@@ -76,7 +82,7 @@ export default function GameDetailPage() {
     setCheckout(true);
   };
 
-  const cta = owned ? 'Play now' : !token ? 'Sign in to get this game' : isFree(game.priceLamports) ? 'Add to library' : 'Buy now';
+  const cta = owned || (conceptPlay && token) ? 'Play now' : !token ? 'Sign in to get this game' : isFree(game.priceLamports) ? 'Add to library' : 'Buy now';
 
   return (
     <div>

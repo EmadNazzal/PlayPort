@@ -35,7 +35,7 @@
   .a .who { background: rgba(255,181,71,.14); color: var(--lantern); }
   .b .who { background: rgba(124,247,255,.12); color: var(--cyan); }
   .view { position: absolute; top: 44px; left: 0; right: 0; bottom: 0; overflow: hidden; }
-  .view iframe { position: absolute; top: 0; left: 0; width: 1100px; border: 0; transform-origin: 0 0; background: #0B0C10; }
+  .view iframe { position: absolute; top: 0; left: 0; border: 0; transform-origin: 0 0; background: #0B0C10; }
 
   /* Fake cursor, driven by record.mjs */
   #cursor { position: absolute; left: 0; top: 0; width: 24px; height: 24px; z-index: 50; pointer-events: none;
@@ -61,6 +61,16 @@
   .box.win-box { border-color: rgba(20,241,149,.4); background: rgba(20,241,149,.06); } .box.win-box .v { color: var(--go); }
   .box.us { border-color: rgba(255,181,71,.4); } .box.us .v { color: var(--lantern); }
   .arrow { align-self: center; font: 32px 'Geist Mono'; color: var(--muted); }
+  /* Film 2: one large window */
+  body.film-wallet .stage { grid-template-columns: 1fr; }
+  body.film-wallet .win.b { display: none; }
+  body.film-wallet .card[data-film='wager'], body:not(.film-wallet) .card[data-film='wallet'] { display: none; }
+  .ledger { margin-top: 48px; display: grid; gap: 14px; width: 760px; text-align: left; }
+  .ledger .row { display: flex; align-items: center; gap: 18px; padding: 20px 24px; border-radius: 20px; background: #15171D; border: 1px solid rgba(255,255,255,.1); font-size: 20px; }
+  .ledger .row b { font-weight: 600; } .ledger .row span { color: var(--muted); font-size: 16px; }
+  .ledger .row .amt { margin-left: auto; font: 600 26px 'Geist Mono', monospace; }
+  .ledger .total { border-color: rgba(20,241,149,.4); background: rgba(20,241,149,.06); }
+  .ledger .total .amt { color: var(--go); }
   .brand { position: absolute; bottom: 40px; left: 0; right: 0; text-align: center; font: 600 16px 'Geist Mono', monospace; letter-spacing: .25em; color: var(--muted); }
 </style>
 </head>
@@ -84,13 +94,13 @@
 
   <svg id="cursor" viewBox="0 0 24 24"><path d="M4 2l15 11-7 1.5L8.5 21z" fill="#fff" stroke="#07080B" stroke-width="1.5" stroke-linejoin="round"/></svg>
 
-  <div class="card" id="card-intro"><div class="inner">
+  <div class="card" id="card-intro" data-film="wager"><div class="inner">
     <div class="eyebrow">PlayPort · concept</div>
     <div class="big">Head-to-head.<br/><em>Winner takes the pot.</em></div>
     <div class="lede">Two players, one wager, settled on Solana.</div>
   </div></div>
 
-  <div class="card" id="card-outro"><div class="inner">
+  <div class="card" id="card-outro" data-film="wager"><div class="inner">
     <div class="eyebrow">Where the 10 SOL goes</div>
     <div class="flow">
       <div class="box"><div class="k">Pot</div><div class="v">10 SOL</div><div class="n">5 + 5, held in escrow</div></div>
@@ -102,15 +112,37 @@
     <div class="lede">PlayPort earns from the studio’s fee — never from the players’ stakes.</div>
   </div><div class="brand">PLAYPORT · THE NIGHT MARKET FOR GAMES</div></div>
 
+  <div class="card" id="card-intro-wallet" data-film="wallet"><div class="inner">
+    <div class="eyebrow">PlayPort · concept</div>
+    <div class="big">One wallet.<br/><em>Every game.</em></div>
+    <div class="lede">Buy inside any game on PlayPort — no cards, no top-ups, no new accounts.</div>
+  </div></div>
+
+  <div class="card" id="card-outro-wallet" data-film="wallet"><div class="inner">
+    <div class="eyebrow">Two games · one wallet</div>
+    <div class="ledger">
+      <div class="row"><b>Breach Protocol</b><span>Ember Dragon skin</span><div class="amt">−2 SOL</div></div>
+      <div class="row"><b>Sugarfall</b><span>Color Bomb ×3</span><div class="amt">−1 SOL</div></div>
+      <div class="row total"><b>Wallet</b><span>25 SOL → 22 SOL</span><div class="amt">22 SOL</div></div>
+    </div>
+    <div class="lede">Players never leave the game. Studios get paid the moment it settles.</div>
+  </div><div class="brand">PLAYPORT · THE NIGHT MARKET FOR GAMES</div></div>
+
 <script>
-  const STEPS = 8;
+  if (new URLSearchParams(location.search).get('film') === 'wallet') document.getElementById('frame-b').removeAttribute('src');
+  const params = new URLSearchParams(location.search);
+  const FILM = params.get('film') ?? 'wager';
+  const IFRAME_WIDTH = Number(params.get('w') ?? 1100);
+  const STEPS = FILM === 'wallet' ? 6 : 8;
+  document.body.classList.toggle('film-wallet', FILM === 'wallet');
+  if (FILM === 'wallet') document.querySelector('#win-a .who').textContent = 'PLAYER · @LEO';
   const $ = (id) => document.getElementById(id);
   $('dots').innerHTML = Array.from({ length: STEPS }, () => '<i></i>').join('');
 
-  // Fit each 1100px-wide iframe into its window.
+  // Render each app at IFRAME_WIDTH CSS pixels and scale it to fill its window.
   const fit = () => document.querySelectorAll('.view').forEach((v) => {
-    const f = v.querySelector('iframe'); const s = v.clientWidth / 1100;
-    f.style.transform = `scale(${s})`; f.style.height = `${v.clientHeight / s}px`;
+    const f = v.querySelector('iframe'); const s = v.clientWidth / IFRAME_WIDTH;
+    f.style.width = `${IFRAME_WIDTH}px`; f.style.transform = `scale(${s})`; f.style.height = `${v.clientHeight / s}px`;
   });
   fit(); addEventListener('resize', fit);
 
@@ -128,7 +160,10 @@
       $('win-a').classList.toggle('dim', side === 'b'); $('win-b').classList.toggle('dim', side === 'a');
     },
     url(side, text, partner) { const u = $(`url-${side}`); u.textContent = text; u.classList.toggle('partner', !!partner); },
-    card(name) { ['intro', 'outro'].forEach((c) => $(`card-${c}`).classList.toggle('on', c === name)); },
+    card(name) {
+      const suffix = FILM === 'wallet' ? '-wallet' : '';
+      ['intro', 'outro'].forEach((c) => $(`card-${c}${suffix}`).classList.toggle('on', c === name));
+    },
     cursor(x, y, show = true) { const c = $('cursor'); c.style.opacity = show ? 1 : 0; c.style.transform = `translate(${x}px, ${y}px)`; },
     clickPulse() { const c = $('cursor'); c.classList.remove('click'); void c.offsetWidth; c.classList.add('click'); },
     send(side, msg) { $(`frame-${side}`).contentWindow.postMessage({ source: 'playport-director', ...msg }, '*'); },

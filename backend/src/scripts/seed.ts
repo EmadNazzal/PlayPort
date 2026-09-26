@@ -210,6 +210,16 @@ const STUDIOS: { name: string; slug: string; owner: string; country: string; des
     ],
   },
   {
+    name: 'Honeycomb Games',
+    slug: 'honeycomb',
+    owner: 'bea@honeycomb.dev',
+    country: 'DK',
+    description: 'Bright, snackable puzzle games for every phone.',
+    games: [
+      { title: 'Sugarfall', slug: 'sugarfall', short: 'Swap, match and pop your way through a candy kingdom.', description: 'A sparkling match-3 with 900 levels, daily challenges and power-ups you can buy in-game with your PlayPort wallet.', genres: ['match-3', 'puzzle', 'casual'], platforms: ['web', 'ios', 'android'], sol: 0 },
+    ],
+  },
+  {
     name: 'Glyph & Gear',
     slug: 'glyph-and-gear',
     owner: 'ines@glyphgear.dev',

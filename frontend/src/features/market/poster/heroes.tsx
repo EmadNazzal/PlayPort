@@ -25,7 +25,8 @@ export type HeroName =
   | 'galleons'
   | 'lighthouse'
   | 'cards'
-  | 'operator';
+  | 'operator'
+  | 'candies';
 
 const knight: Hero = {
   height: 320,
@@ -392,4 +393,27 @@ const operator: Hero = {
   ),
 };
 
-export const HEROES: Record<HeroName, Hero> = { knight, samurai, pilot, ship, car, surfer, diver, lanternkid, fox, mage, robot, mech, pet, galleons, lighthouse, cards, operator };
+/** A tumbling pile of candies — coloured, not a silhouette (use with `heroFill` unset + daylight). */
+const CANDY_COLORS = ['#FF4F8B', '#FFB547', '#7CD4FF', '#8BE36B', '#B98CFF'];
+const candies: Hero = {
+  height: 300,
+  width: 300,
+  body: (
+    <>
+      {[
+        [-90, -60, 44, 0], [0, -40, 52, 1], [95, -70, 42, 2], [-45, -150, 46, 3], [55, -160, 48, 4],
+        [5, -250, 50, 0], [-110, -210, 34, 2], [115, -230, 36, 1],
+      ].map(([x, y, r, c], i) => (
+        <g key={i} transform={`translate(${x} ${y})`}>
+          <circle r={r} fill={CANDY_COLORS[c!]} />
+          <circle r={r! * 0.72} fill="none" stroke="#fff" strokeOpacity="0.35" strokeWidth={r! * 0.12} strokeDasharray={`${r! * 0.5} ${r! * 0.4}`} />
+          <ellipse cx={-r! * 0.35} cy={-r! * 0.4} rx={r! * 0.28} ry={r! * 0.16} fill="#fff" opacity="0.75" transform={`rotate(-30 ${-r! * 0.35} ${-r! * 0.4})`} />
+        </g>
+      ))}
+      <path d="M-150 -120 l-26 -18 l6 36 z M -150 -120 l -26 18 l 30 6 z" fill={CANDY_COLORS[3]} />
+      <rect x="-172" y="-132" width="40" height="24" rx="12" fill={CANDY_COLORS[3]} />
+    </>
+  ),
+};
+
+export const HEROES: Record<HeroName, Hero> = { knight, samurai, pilot, ship, car, surfer, diver, lanternkid, fox, mage, robot, mech, pet, galleons, lighthouse, cards, operator, candies };

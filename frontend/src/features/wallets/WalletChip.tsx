@@ -79,9 +79,14 @@ export const WalletChip = () => {
               <Copy className="size-4 text-muted" /> Copy address
             </Menu.Item>
             {token && (
-              <Menu.Item className={menuItem} render={<Link to="/player/wallets" />}>
-                <Link2 className="size-4 text-muted" /> Manage wallets
-              </Menu.Item>
+              <>
+                <Menu.Item className={menuItem} render={<Link to="/player/wallet" />}>
+                  <Wallet className="size-4 text-muted" /> Wallet & activity
+                </Menu.Item>
+                <Menu.Item className={menuItem} render={<Link to="/player/wallets" />}>
+                  <Link2 className="size-4 text-muted" /> Manage wallets
+                </Menu.Item>
+              </>
             )}
             <Menu.Item className={menuItem} onClick={() => void disconnect()}>
               <LogOut className="size-4 text-muted" /> Disconnect

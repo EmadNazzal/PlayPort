@@ -4,7 +4,8 @@ import { useGamerProfile, useLibrary, useMe, useWallets } from '@/lib/queries';
 
 const TABS = [
   { to: '/player', label: 'Library', end: true },
-  { to: '/player/wallets', label: 'Wallets' },
+  { to: '/player/wallet', label: 'Wallet' },
+  { to: '/player/wallets', label: 'Linked wallets' },
   { to: '/player/purchases', label: 'Purchases' },
   { to: '/player/profile', label: 'Profile' },
 ];

@@ -3,7 +3,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "record": "node record.mjs"
+    "record:wager": "node record-wager.mjs",
+    "record:wallet": "node record-wallet.mjs",
+    "record": "node record-wager.mjs && node record-wallet.mjs"
   },
   "dependencies": {
     "playwright-core": "^1.55.0"

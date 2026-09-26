@@ -27,7 +27,8 @@ export type EnvName =
   | 'void'
   | 'mountains'
   | 'storm'
-  | 'dust';
+  | 'dust'
+  | 'candy';
 
 export type SceneCtx = { W: number; H: number; p: Palette; r: () => number; uid: string; wide: boolean };
 export type Scene = { back: ReactNode; front?: ReactNode; groundY: number; lightAt: { x: number; y: number; r: number } };
@@ -89,8 +90,9 @@ const Mist = ({ ctx, y, opacity = 0.35 }: { ctx: SceneCtx; y: number; opacity?: 
 );
 
 const envs: Record<EnvName, (ctx: SceneCtx) => Scene> = {
-  // `dust` is defined below the map.
+  // `dust` and `candy` are defined below the map.
   dust: () => ({ back: null, groundY: 0, lightAt: { x: 0, y: 0, r: 0 } }),
+  candy: () => ({ back: null, groundY: 0, lightAt: { x: 0, y: 0, r: 0 } }),
   ruins: (ctx) => {
     const { W, H, p, r } = ctx;
     const g = H * 0.74;
@@ -583,6 +585,49 @@ envs.dust = (ctx) => {
           <rect x={W * 0.06} y={g - 130} width="90" height="80" />
           <rect x={W * 0.06 + 20} y={g - 180} width="60" height="50" />
           <rect x={W * 0.8} y={g - 110} width="80" height="60" />
+        </g>
+      </>
+    ),
+  };
+};
+
+/** Pastel candyland: lollipop trees, cream hills, sprinkles. */
+envs.candy = (ctx) => {
+  const { W, H, p, r } = ctx;
+  const g = H * 0.78;
+  const pops = Array.from({ length: ctx.wide ? 9 : 5 }, (_, i) => {
+    const x = (i + 0.5) * (W / (ctx.wide ? 9 : 5)) + (r() - 0.5) * 40;
+    const h = H * (0.18 + r() * 0.16);
+    const rad = 34 + r() * 26;
+    const c = ['#FF7FB0', '#FFC56B', '#8FD9FF', '#B7F08E', '#C9A2FF'][i % 5];
+    return (
+      <g key={i}>
+        <rect x={x - 4} y={g - h} width="8" height={h} rx="4" fill="#FFF4FA" />
+        <circle cx={x} cy={g - h} r={rad} fill={c} />
+        <path d={`M ${x - rad * 0.6} ${g - h} a ${rad * 0.6} ${rad * 0.6} 0 1 1 ${rad * 0.6} ${rad * 0.6}`} fill="none" stroke="#fff" strokeOpacity="0.6" strokeWidth="6" />
+      </g>
+    );
+  });
+  return {
+    groundY: g,
+    lightAt: { x: W * 0.5, y: H * 0.3, r: H * 0.1 },
+    back: (
+      <>
+        <defs>
+          <linearGradient id={`sky-${ctx.uid}`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor={p.skyTop} />
+            <stop offset="1" stopColor={p.skyBottom} />
+          </linearGradient>
+        </defs>
+        <rect width={W} height={H} fill={`url(#sky-${ctx.uid})`} />
+        <circle cx={W * 0.8} cy={H * 0.14} r={H * 0.07} fill={p.light} />
+        {pops}
+        <ellipse cx={W * 0.25} cy={H * 0.9} rx={W * 0.6} ry={H * 0.2} fill={p.far} />
+        <ellipse cx={W * 0.85} cy={H * 0.94} rx={W * 0.6} ry={H * 0.2} fill={p.mid} />
+        <g>
+          {Array.from({ length: 60 }, (_, i) => (
+            <rect key={i} x={r() * W} y={H * (0.8 + r() * 0.18)} width="10" height="3" rx="1.5" fill={['#FF4F8B', '#FFB547', '#7CD4FF', '#8BE36B'][i % 4]} transform={`rotate(${r() * 180})`} style={{ transformBox: 'fill-box', transformOrigin: 'center' }} />
+          ))}
         </g>
       </>
     ),

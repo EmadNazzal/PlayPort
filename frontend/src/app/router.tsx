@@ -7,12 +7,15 @@ import { CommandMenu } from '@/features/market/CommandMenu';
 import { MarketLayout } from '@/features/market/MarketLayout';
 import { DemoBridge } from '@/features/concept/DemoBridge';
 import { isConcept } from '@/features/concept/flag';
+// Eager: it stands in for a studio's site, and a loading flash there would look like a crash.
+import PlayPage from '@/features/concept/PlayPage';
 
 const StorePage = lazy(() => import('@/features/market/StorePage'));
 const BrowsePage = lazy(() => import('@/features/market/BrowsePage'));
 const GameDetailPage = lazy(() => import('@/features/market/GameDetailPage'));
 
 const PlayerLayout = lazy(() => import('@/features/player/PlayerLayout'));
+const WalletPortal = lazy(() => import('@/features/player/WalletPortal'));
 const LibraryTab = lazy(() => import('@/features/player/LibraryTab'));
 const WalletsTab = lazy(() => import('@/features/player/WalletsTab'));
 const PurchasesTab = lazy(() => import('@/features/player/PurchasesTab'));
@@ -71,6 +74,7 @@ export const router = createBrowserRouter([
             element: authed(<PlayerLayout />),
             children: [
               { index: true, element: page(<LibraryTab />) },
+              { path: 'wallet', element: page(<WalletPortal />) },
               { path: 'wallets', element: page(<WalletsTab />) },
               { path: 'purchases', element: page(<PurchasesTab />) },
               { path: 'profile', element: page(<ProfileTab />) },
@@ -96,6 +100,7 @@ export const router = createBrowserRouter([
         ],
       },
       { path: '/concept/match/:id', element: authed(<MatchPage />) },
+      { path: '/concept/play/:slug', element: <RequireAuth><PlayPage /></RequireAuth> },
       { path: '/market/*', element: <LegacyMarket /> },
       { path: '/market', element: <Navigate to="/" replace /> },
       { path: '/library', element: <Navigate to="/player" replace /> },
