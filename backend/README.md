@@ -10,6 +10,7 @@ npm install
 npm run db:up                 # Postgres 16 in Docker on :5433
 npm run db:migrate
 ADMIN_EMAIL=you@example.com ADMIN_PASSWORD='a-long-passphrase' npm run create-admin
+npm run db:seed               # optional: reset + mock users, partners, games, payments
 npm run dev                   # http://localhost:4000
 npm test                      # integration tests against a throwaway playport_test DB
 ```
