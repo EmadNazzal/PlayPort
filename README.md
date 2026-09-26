@@ -8,11 +8,15 @@ we integrate with them over their APIs and webhooks.
 
 ```
 PlayPort/
-├── backend/              # TypeScript API (Express), organised by module
+├── backend/              # TypeScript API (Express + Postgres/Drizzle), organised by module
 │   └── src/modules/
-│       ├── gamer/        # player accounts, profiles
-│       ├── partner/      # game hosts and their externally hosted games
-│       └── wallets/      # Solana wallet linking and ownership verification
+│       ├── auth/         # email + Sign-In With Solana, JWT + rotating refresh tokens
+│       ├── gamer/        # gamer profiles and libraries
+│       ├── wallets/      # linked Solana wallets
+│       ├── partner/      # studios hosting their own games, team roles, API keys
+│       ├── games/        # catalog and review workflow
+│       ├── payments/     # SOL purchases verified on-chain
+│       └── admin/        # users, roles, reviews, audit log
 ├── frontend/             # React + Vite + TypeScript app, organised by feature
 ├── docs/best-practices/  # how we write backend TypeScript and React
 └── .claude/skills/       # AI agent skills (solana.new), usable from Claude Code
@@ -20,10 +24,10 @@ PlayPort/
 
 ## Getting started
 
-Requires Node.js 20+.
+Requires Node.js 20+ and Docker. Backend setup (database, env, first admin) is in
+[backend/README.md](backend/README.md).
 
 ```bash
-cd backend && npm install && npm run dev     # API on http://localhost:4000
 cd frontend && npm install && npm run dev    # app on http://localhost:5173
 ```
 

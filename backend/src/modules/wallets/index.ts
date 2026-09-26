@@ -1,1 +1,2 @@
-// Public API of the wallets module. Other modules import only from here.
+export { createWalletRouter } from './wallets.routes.js';
+export { createWalletService, type WalletService } from './wallets.service.js';

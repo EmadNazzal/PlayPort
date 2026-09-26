@@ -1,1 +1,2 @@
-// Public API of the gamer module. Other modules import only from here.
+export { createGamerRouter } from './gamer.routes.js';
+export { createGamerService, type GamerService } from './gamer.service.js';
