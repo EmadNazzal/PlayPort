@@ -33,7 +33,7 @@ const TiltCard = ({ game, index }: { game: Game; index: number }) => {
         }}
         style={{ rotateX, rotateY, transformStyle: 'preserve-3d' }}
       >
-        <Link to={`/market/games/${game.slug}`} className="group relative block aspect-[3/4] overflow-hidden rounded-3xl ring-1 ring-white/10">
+        <Link to={`/market/games/${game.slug}`} className="group relative block aspect-[2/3] overflow-hidden rounded-3xl ring-1 ring-white/10">
           <GameCover game={game} />
           <motion.div
             aria-hidden

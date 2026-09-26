@@ -13,7 +13,7 @@ const Row = ({ games, reverse, duration }: { games: Game[]; reverse?: boolean; d
           to={`/market/games/${g.slug}`}
           tabIndex={i >= games.length ? -1 : 0}
           aria-hidden={i >= games.length}
-          className="relative block aspect-[3/4] w-[190px] shrink-0 overflow-hidden rounded-2xl ring-1 ring-white/10 transition-transform duration-300 ease-(--ease-out) sm:w-[230px] [@media(hover:hover)]:hover:-translate-y-2"
+          className="relative block aspect-[2/3] w-[180px] shrink-0 overflow-hidden rounded-2xl ring-1 ring-white/10 transition-transform duration-300 ease-(--ease-out) sm:w-[220px] [@media(hover:hover)]:hover:-translate-y-2"
         >
           <GameCover game={g} />
         </Link>
