@@ -38,10 +38,17 @@ cd frontend && npm install && npm run dev    # app on http://localhost:5173
 
 ## AI skills
 
-`.claude/skills/solana-new/` vendors the [solana.new](https://www.solana.new/) skill set
-(MIT, from [sendaifun/solana-new](https://github.com/sendaifun/solana-new)). Open the repo in
-Claude Code and they are picked up automatically, e.g. `/scaffold-project`, `/build-with-claude`,
-`/debug-program`, `/deploy-to-mainnet`. Start with `SKILL_ROUTER.md` to see them all.
+Skills in `.claude/skills/` are picked up automatically when you open the repo in Claude Code.
+
+- **solana.new** (`.claude/skills/solana-new/`) — Solana build journey: `/scaffold-project`,
+  `/build-with-claude`, `/debug-program`, `/deploy-to-mainnet`, ... Start with `SKILL_ROUTER.md`.
+  MIT, vendored from [sendaifun/solana-new](https://github.com/sendaifun/solana-new).
+- **Emil Kowalski's design engineering skills** — UI polish and motion: `emil-design-eng`,
+  `animate`, `review-animations`, `improve-animations`, `find-animation-opportunities`,
+  `apple-design`, `mobile-native`, `pick-ui-library`, `prototype`, `ask-sonner`,
+  `animation-vocabulary`, plus `animate-expo` and `write-swift` for native work.
+  MIT, from [emilkowalski/skills](https://github.com/emilkowalski/skills); update with
+  `npx skills@latest update -p`.
 
 ## License
 
