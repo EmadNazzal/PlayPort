@@ -24,7 +24,8 @@ export type HeroName =
   | 'pet'
   | 'galleons'
   | 'lighthouse'
-  | 'cards';
+  | 'cards'
+  | 'operator';
 
 const knight: Hero = {
   height: 320,
@@ -365,4 +366,30 @@ const cards: Hero = {
   ),
 };
 
-export const HEROES: Record<HeroName, Hero> = { knight, samurai, pilot, ship, car, surfer, diver, lanternkid, fox, mage, robot, mech, pet, galleons, lighthouse, cards };
+const operator: Hero = {
+  height: 300,
+  width: 230,
+  body: (
+    <>
+      <path d="M-18 -276 C -20 -304 18 -306 20 -278 L 22 -262 L -18 -260 Z" />
+      <rect x="-26" y="-284" width="52" height="10" rx="4" />
+      <path d="M-40 -252 Q 0 -266 40 -252 L 44 -170 L -44 -170 Z" />
+      <rect x="-46" y="-240" width="92" height="56" rx="8" />
+      <path d="M-44 -172 L 44 -172 L 40 -120 L -40 -120 Z" />
+      <path d="M-40 -122 L -8 -122 L -14 -44 L -6 -4 L -40 0 L -34 -46 Z" />
+      <path d="M8 -122 L 40 -122 L 36 -48 L 44 0 L 10 -4 L 16 -46 Z" />
+      <path d="M36 -244 L 60 -214 L 90 -200 L 84 -186 L 50 -198 L 30 -222 Z" />
+      <path d="M-36 -240 L -52 -200 L 20 -190 L 22 -178 L -60 -184 L -50 -236 Z" />
+      <path d="M-30 -204 L 150 -216 L 152 -206 L 120 -200 L 118 -188 L 96 -186 L 92 -198 L -30 -190 Z" />
+      <rect x="40" y="-230" width="30" height="10" rx="2" />
+    </>
+  ),
+  accent: (
+    <>
+      <rect x="-12" y="-274" width="28" height="7" rx="3" />
+      <circle cx="152" cy="-211" r="3" />
+    </>
+  ),
+};
+
+export const HEROES: Record<HeroName, Hero> = { knight, samurai, pilot, ship, car, surfer, diver, lanternkid, fox, mage, robot, mech, pet, galleons, lighthouse, cards, operator };

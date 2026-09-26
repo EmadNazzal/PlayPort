@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>PlayPort — wager demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,300..800&family=Geist:wght@300..700&family=Geist+Mono:wght@400..600&display=swap" />
+<style>
+  :root { --ink:#07080B; --text:#F2EFE9; --muted:#8C8F99; --go:#14F195; --lantern:#FFB547; --cyan:#7CF7FF; --ease:cubic-bezier(.23,1,.32,1); }
+  * { box-sizing: border-box; margin: 0; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; background: radial-gradient(1200px 600px at 50% -10%, #16202a, var(--ink)); color: var(--text); font-family: Geist, system-ui, sans-serif; }
+
+  /* Step caption */
+  .caption { position: absolute; top: 34px; left: 60px; right: 60px; display: flex; align-items: flex-end; gap: 28px; height: 96px; }
+  .step-num { font: 600 15px 'Geist Mono', monospace; letter-spacing: .2em; color: var(--muted); padding-bottom: 12px; white-space: nowrap; }
+  .step-num b { color: var(--text); font-weight: 600; }
+  .titles { flex: 1; transition: opacity 300ms var(--ease), transform 300ms var(--ease); }
+  .titles.swap { opacity: 0; transform: translateY(8px); }
+  .title { font: 700 44px/1.05 'Bricolage Grotesque'; font-variation-settings: 'wdth' 82; letter-spacing: -.03em; }
+  .sub { margin-top: 8px; font-size: 19px; color: var(--muted); }
+  .dots { display: flex; gap: 8px; padding-bottom: 16px; }
+  .dots i { width: 28px; height: 4px; border-radius: 4px; background: rgba(255,255,255,.12); transition: background 400ms var(--ease); }
+  .dots i.on { background: var(--go); }
+
+  /* Player windows */
+  .stage { position: absolute; top: 158px; left: 40px; right: 40px; bottom: 36px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+  .win { position: relative; border-radius: 18px; overflow: hidden; background: #0B0C10; border: 1px solid rgba(255,255,255,.12);
+         box-shadow: 0 40px 100px -30px rgba(0,0,0,.9); transition: opacity 500ms var(--ease), transform 500ms var(--ease), filter 500ms var(--ease); }
+  .win.dim { opacity: .38; transform: scale(.985); filter: saturate(.6); }
+  .bar { height: 44px; display: flex; align-items: center; gap: 12px; padding: 0 16px; background: #15171D; border-bottom: 1px solid rgba(255,255,255,.08); }
+  .lights { display: flex; gap: 7px; } .lights i { width: 11px; height: 11px; border-radius: 50%; background: #3a3d45; }
+  .url { flex: 1; height: 28px; border-radius: 8px; background: rgba(255,255,255,.05); display: flex; align-items: center; padding: 0 12px; font: 13px 'Geist Mono', monospace; color: #B8B6AE; transition: color 300ms; }
+  .url.partner { color: var(--lantern); }
+  .who { font: 600 12px 'Geist Mono', monospace; letter-spacing: .16em; padding: 5px 10px; border-radius: 7px; white-space: nowrap; }
+  .a .who { background: rgba(255,181,71,.14); color: var(--lantern); }
+  .b .who { background: rgba(124,247,255,.12); color: var(--cyan); }
+  .view { position: absolute; top: 44px; left: 0; right: 0; bottom: 0; overflow: hidden; }
+  .view iframe { position: absolute; top: 0; left: 0; width: 1100px; border: 0; transform-origin: 0 0; background: #0B0C10; }
+
+  /* Fake cursor, driven by record.mjs */
+  #cursor { position: absolute; left: 0; top: 0; width: 24px; height: 24px; z-index: 50; pointer-events: none;
+            transition: transform 650ms var(--ease), opacity 200ms; opacity: 0; filter: drop-shadow(0 2px 4px rgba(0,0,0,.6)); }
+  #cursor.click::after { content: ''; position: absolute; left: -14px; top: -14px; width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--go); animation: ring 400ms var(--ease) forwards; }
+  @keyframes ring { from { transform: scale(.4); opacity: 1 } to { transform: scale(1.4); opacity: 0 } }
+
+  /* Title cards */
+  .card { position: absolute; inset: 0; z-index: 40; display: grid; place-items: center; background: radial-gradient(900px 500px at 50% 40%, #16202a, #07080B 70%);
+          opacity: 0; pointer-events: none; transition: opacity 600ms var(--ease); }
+  .card.on { opacity: 1; }
+  .card .inner { text-align: center; transform: translateY(12px); transition: transform 800ms var(--ease); }
+  .card.on .inner { transform: none; }
+  .eyebrow { font: 600 14px 'Geist Mono', monospace; letter-spacing: .3em; color: var(--muted); text-transform: uppercase; }
+  .big { font: 700 110px/.9 'Bricolage Grotesque'; font-variation-settings: 'wdth' 78, 'opsz' 96; letter-spacing: -.045em; margin-top: 22px; }
+  .big em { font-style: italic; font-weight: 300; font-variation-settings: 'wdth' 100; color: var(--lantern); }
+  .lede { margin-top: 26px; font-size: 24px; color: var(--muted); }
+  .flow { display: flex; align-items: stretch; gap: 22px; margin-top: 56px; }
+  .box { width: 300px; padding: 26px; border-radius: 22px; background: #15171D; border: 1px solid rgba(255,255,255,.1); text-align: left; }
+  .box .k { font: 13px 'Geist Mono', monospace; letter-spacing: .14em; color: var(--muted); text-transform: uppercase; }
+  .box .v { font: 700 54px/1 'Bricolage Grotesque'; letter-spacing: -.03em; margin-top: 12px; font-variant-numeric: tabular-nums; }
+  .box .n { margin-top: 10px; font-size: 16px; color: var(--muted); }
+  .box.win-box { border-color: rgba(20,241,149,.4); background: rgba(20,241,149,.06); } .box.win-box .v { color: var(--go); }
+  .box.us { border-color: rgba(255,181,71,.4); } .box.us .v { color: var(--lantern); }
+  .arrow { align-self: center; font: 32px 'Geist Mono'; color: var(--muted); }
+  .brand { position: absolute; bottom: 40px; left: 0; right: 0; text-align: center; font: 600 16px 'Geist Mono', monospace; letter-spacing: .25em; color: var(--muted); }
+</style>
+</head>
+<body>
+  <div class="caption">
+    <div class="step-num" id="num"><b>01</b> / 08</div>
+    <div class="titles" id="titles"><div class="title" id="title"></div><div class="sub" id="sub"></div></div>
+    <div class="dots" id="dots"></div>
+  </div>
+
+  <div class="stage">
+    <div class="win a" id="win-a">
+      <div class="bar"><div class="lights"><i></i><i></i><i></i></div><div class="url" id="url-a">playport.gg</div><div class="who">PLAYER A · @LEO</div></div>
+      <div class="view"><iframe id="frame-a" src="http://localhost:5174/?concept=1"></iframe></div>
+    </div>
+    <div class="win b" id="win-b">
+      <div class="bar"><div class="lights"><i></i><i></i><i></i></div><div class="url" id="url-b">playport.gg</div><div class="who">PLAYER B · @MIA</div></div>
+      <div class="view"><iframe id="frame-b" src="http://[::1]:5174/?concept=1"></iframe></div>
+    </div>
+  </div>
+
+  <svg id="cursor" viewBox="0 0 24 24"><path d="M4 2l15 11-7 1.5L8.5 21z" fill="#fff" stroke="#07080B" stroke-width="1.5" stroke-linejoin="round"/></svg>
+
+  <div class="card" id="card-intro"><div class="inner">
+    <div class="eyebrow">PlayPort · concept</div>
+    <div class="big">Head-to-head.<br/><em>Winner takes the pot.</em></div>
+    <div class="lede">Two players, one wager, settled on Solana.</div>
+  </div></div>
+
+  <div class="card" id="card-outro"><div class="inner">
+    <div class="eyebrow">Where the 10 SOL goes</div>
+    <div class="flow">
+      <div class="box"><div class="k">Pot</div><div class="v">10 SOL</div><div class="n">5 + 5, held in escrow</div></div>
+      <div class="arrow">→</div>
+      <div class="box win-box"><div class="k">Winner · @leo</div><div class="v">9 SOL</div><div class="n">Pot minus the 10% studio fee</div></div>
+      <div class="box"><div class="k">Studio · Ironclad</div><div class="v">0.9 SOL</div><div class="n">10% fee, less PlayPort’s cut</div></div>
+      <div class="box us"><div class="k">PlayPort</div><div class="v">0.1 SOL</div><div class="n">10% of the studio fee</div></div>
+    </div>
+    <div class="lede">PlayPort earns from the studio’s fee — never from the players’ stakes.</div>
+  </div><div class="brand">PLAYPORT · THE NIGHT MARKET FOR GAMES</div></div>
+
+<script>
+  const STEPS = 8;
+  const $ = (id) => document.getElementById(id);
+  $('dots').innerHTML = Array.from({ length: STEPS }, () => '<i></i>').join('');
+
+  // Fit each 1100px-wide iframe into its window.
+  const fit = () => document.querySelectorAll('.view').forEach((v) => {
+    const f = v.querySelector('iframe'); const s = v.clientWidth / 1100;
+    f.style.transform = `scale(${s})`; f.style.height = `${v.clientHeight / s}px`;
+  });
+  fit(); addEventListener('resize', fit);
+
+  window.director = {
+    step(n, title, sub) {
+      const t = $('titles'); t.classList.add('swap');
+      setTimeout(() => {
+        $('num').innerHTML = `<b>${String(n).padStart(2, '0')}</b> / ${String(STEPS).padStart(2, '0')}`;
+        $('title').textContent = title; $('sub').textContent = sub || '';
+        [...$('dots').children].forEach((d, i) => d.classList.toggle('on', i < n));
+        t.classList.remove('swap');
+      }, 260);
+    },
+    focus(side) { // 'a' | 'b' | 'both'
+      $('win-a').classList.toggle('dim', side === 'b'); $('win-b').classList.toggle('dim', side === 'a');
+    },
+    url(side, text, partner) { const u = $(`url-${side}`); u.textContent = text; u.classList.toggle('partner', !!partner); },
+    card(name) { ['intro', 'outro'].forEach((c) => $(`card-${c}`).classList.toggle('on', c === name)); },
+    cursor(x, y, show = true) { const c = $('cursor'); c.style.opacity = show ? 1 : 0; c.style.transform = `translate(${x}px, ${y}px)`; },
+    clickPulse() { const c = $('cursor'); c.classList.remove('click'); void c.offsetWidth; c.classList.add('click'); },
+    send(side, msg) { $(`frame-${side}`).contentWindow.postMessage({ source: 'playport-director', ...msg }, '*'); },
+  };
+</script>
+</body>
+</html>

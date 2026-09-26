@@ -200,6 +200,16 @@ const STUDIOS: { name: string; slug: string; owner: string; country: string; des
     ],
   },
   {
+    name: 'Ironclad Interactive',
+    slug: 'ironclad',
+    owner: 'rhea@ironclad.dev',
+    country: 'SE',
+    description: 'Competitive tactical shooters with hosted ranked servers.',
+    games: [
+      { title: 'Breach Protocol', slug: 'breach-protocol', short: 'Five rounds. One bomb site. No second chances.', description: 'A tactical 5v5 and 1v1 shooter played on Ironclad’s own servers. Plant, defuse, clutch. Supports head-to-head wager matches settled on PlayPort.', genres: ['shooter', 'tactical', 'multiplayer'], platforms: ['web', 'windows'], sol: 0, minAge: 16 },
+    ],
+  },
+  {
     name: 'Glyph & Gear',
     slug: 'glyph-and-gear',
     owner: 'ines@glyphgear.dev',

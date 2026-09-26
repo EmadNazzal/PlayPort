@@ -1,4 +1,4 @@
-import { ArrowLeft, ArrowUpRight, Check, Globe, Monitor, ShieldCheck, Smartphone } from 'lucide-react';
+import { ArrowLeft, ArrowUpRight, Check, Globe, Monitor, ShieldCheck, Smartphone, Swords } from 'lucide-react';
 import { motion, useReducedMotion, useScroll, useTransform } from 'motion/react';
 import { useRef, useState } from 'react';
 import { Link, useParams } from 'react-router';
@@ -10,6 +10,8 @@ import { formatDate, isFree, PLATFORM_LABELS, titleCase } from '@/lib/format';
 import { useClaimGame, useGame, useGames, useLibrary, useMe } from '@/lib/queries';
 import { useSession } from '@/lib/session';
 import { useAuthDialog } from '@/features/auth/authDialogStore';
+import { ChallengeDialog } from '@/features/concept/ChallengeDialog';
+import { isConcept } from '@/features/concept/flag';
 import { CheckoutDialog } from './CheckoutDialog';
 import { GameCard } from './GameCard';
 import { GameCover } from './GameCover';
@@ -27,6 +29,7 @@ export default function GameDetailPage() {
   const showAuth = useAuthDialog((s) => s.show);
   const claim = useClaimGame();
   const [checkout, setCheckout] = useState(false);
+  const [challenge, setChallenge] = useState(false);
 
   const hero = useRef<HTMLDivElement>(null);
   const reduce = useReducedMotion();
@@ -153,6 +156,11 @@ export default function GameDetailPage() {
               {cta} {owned && <ArrowUpRight />}
             </Button>
             {token && me && !isGamer && !owned && <p className="mt-3 text-center text-xs text-muted">Buying needs a gamer account. Partner accounts can browse only.</p>}
+            {isConcept() && token && isGamer && game.genres.includes('multiplayer') && (
+              <Button intent="ghost" size="lg" className="mt-2 w-full" onClick={() => setChallenge(true)}>
+                <Swords /> Challenge a player
+              </Button>
+            )}
             <ul className="mt-6 space-y-3 border-t border-line pt-5 text-sm text-muted">
               <li className="flex gap-2.5">
                 <ArrowUpRight className="mt-0.5 size-4 shrink-0" />
@@ -189,6 +197,8 @@ export default function GameDetailPage() {
         </div>
       </div>
       <div className="h-20 lg:hidden" />
+
+      {isConcept() && <ChallengeDialog game={game} open={challenge} onOpenChange={setChallenge} />}
 
       {!isFree(game.priceLamports) && (
         <CheckoutDialog

@@ -19,6 +19,7 @@ PlayPort/
 │       └── admin/        # users, roles, reviews, audit log
 ├── frontend/             # React + Vite app: marketplace, player area, studio (partner) area
 ├── docs/best-practices/  # how we write backend TypeScript and React
+├── tools/demo-video/     # records the wager-concept pitch video
 └── .claude/skills/       # AI agent skills (solana.new), usable from Claude Code
 ```
 

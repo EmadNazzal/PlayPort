@@ -39,6 +39,7 @@ export const RECIPES: Record<string, Recipe> = {
   runeshard: { env: 'void', hero: 'cards', particles: 'stars', palette: P('#0A0620', '#23104A', '#9F7BFF', '#2A1A5C', '#4B2F9F', '#07041A', '#EFE9FF') },
   'paper-mechs': { env: 'arena', hero: 'mech', particles: 'sparks', palette: P('#10141C', '#6A4A2A', '#FFD166', '#2A2E38', '#1C1F28', '#0A0B0F', '#FFF8E6') },
   sigil: { env: 'void', hero: 'mage', particles: 'sparks', heroX: 0.42, palette: P('#04121A', '#0D3A4A', '#5CFFE1', '#0B2A36', '#12505E', '#020A0E', '#E6FFFB') },
+  'breach-protocol': { env: 'dust', hero: 'operator', particles: 'embers', heroX: 0.44, palette: P('#3B2A1A', '#E8A45C', '#FFE2A6', '#8A5A33', '#6E4526', '#1A120B', '#FFF4E2') },
   'pixel-pals': { env: 'meadow', hero: 'pet', particles: 'none', daylight: true, heroFill: '#FF9ECB', palette: P('#7FD3FF', '#FFE3F1', '#FFF6B0', '#8FE3A0', '#5CC98A', '#3AA56E', '#FFFFFF') },
 };
 
@@ -55,6 +56,7 @@ const BY_GENRE: [string[], Recipe[]][] = [
   [['strategy', 'tactics', 'simulation'], [RECIPES['salt-and-iron']!, RECIPES['harbor-kings']!]],
   [['platformer'], [RECIPES['clockwork-heart']!]],
   [['card'], [RECIPES.runeshard!]],
+  [['shooter', 'tactical', 'fps'], [RECIPES['breach-protocol']!]],
   [['sandbox', 'multiplayer'], [RECIPES['paper-mechs']!]],
   [['casual', 'idle'], [RECIPES['pixel-pals']!]],
 ];

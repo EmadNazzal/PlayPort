@@ -26,7 +26,8 @@ export type EnvName =
   | 'arena'
   | 'void'
   | 'mountains'
-  | 'storm';
+  | 'storm'
+  | 'dust';
 
 export type SceneCtx = { W: number; H: number; p: Palette; r: () => number; uid: string; wide: boolean };
 export type Scene = { back: ReactNode; front?: ReactNode; groundY: number; lightAt: { x: number; y: number; r: number } };
@@ -88,6 +89,8 @@ const Mist = ({ ctx, y, opacity = 0.35 }: { ctx: SceneCtx; y: number; opacity?: 
 );
 
 const envs: Record<EnvName, (ctx: SceneCtx) => Scene> = {
+  // `dust` is defined below the map.
+  dust: () => ({ back: null, groundY: 0, lightAt: { x: 0, y: 0, r: 0 } }),
   ruins: (ctx) => {
     const { W, H, p, r } = ctx;
     const g = H * 0.74;
@@ -541,6 +544,49 @@ const envs: Record<EnvName, (ctx: SceneCtx) => Scene> = {
       ),
     };
   },
+};
+
+/** Sun-baked compound: arches, crates, heat haze. */
+envs.dust = (ctx) => {
+  const { W, H, p, r } = ctx;
+  const g = H * 0.76;
+  const walls = Array.from({ length: ctx.wide ? 7 : 4 }, (_, i) => {
+    const w = W / (ctx.wide ? 7 : 4);
+    const x = i * w;
+    const h = H * (0.2 + r() * 0.14);
+    return (
+      <g key={i}>
+        <rect x={x} y={g - h - 60} width={w + 2} height={h + 60} fill={i % 2 ? p.far : p.mid} />
+        <path d={`M ${x + w * 0.3} ${g - 60} L ${x + w * 0.3} ${g - h * 0.55 - 60} Q ${x + w * 0.5} ${g - h * 0.8 - 60} ${x + w * 0.7} ${g - h * 0.55 - 60} L ${x + w * 0.7} ${g - 60} Z`} fill={p.skyBottom} opacity="0.85" />
+        <rect x={x + w * 0.08} y={g - h - 40} width={w * 0.12} height={h * 0.2} fill={p.near} opacity="0.5" />
+      </g>
+    );
+  });
+  return {
+    groundY: g,
+    lightAt: { x: W * 0.62, y: H * 0.22, r: H * 0.1 },
+    back: (
+      <>
+        <defs>
+          <linearGradient id={`sky-${ctx.uid}`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor={p.skyTop} />
+            <stop offset="1" stopColor={p.skyBottom} />
+          </linearGradient>
+        </defs>
+        <rect width={W} height={H} fill={`url(#sky-${ctx.uid})`} />
+        <circle cx={W * (ctx.wide ? 0.78 : 0.66)} cy={H * 0.2} r={H * 0.09} fill={p.light} />
+        <circle cx={W * (ctx.wide ? 0.78 : 0.66)} cy={H * 0.2} r={H * 0.22} fill={p.light} opacity="0.18" filter={`url(#soft-${ctx.uid})`} />
+        {walls}
+        <rect x={-W * 0.1} y={g - 140} width={W * 1.2} height="160" fill={p.skyBottom} opacity="0.35" filter={`url(#soft-${ctx.uid})`} />
+        <rect y={g - 60} width={W} height={H} fill={p.near} />
+        <g fill={p.mid}>
+          <rect x={W * 0.06} y={g - 130} width="90" height="80" />
+          <rect x={W * 0.06 + 20} y={g - 180} width="60" height="50" />
+          <rect x={W * 0.8} y={g - 110} width="80" height="60" />
+        </g>
+      </>
+    ),
+  };
 };
 
 export const renderScene = (name: EnvName, ctx: SceneCtx) => envs[name](ctx);

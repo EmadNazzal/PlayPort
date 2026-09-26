@@ -5,6 +5,8 @@ import { AuthDialog } from '@/features/auth/AuthDialog';
 import { RequireAuth } from '@/features/auth/RequireAuth';
 import { CommandMenu } from '@/features/market/CommandMenu';
 import { MarketLayout } from '@/features/market/MarketLayout';
+import { DemoBridge } from '@/features/concept/DemoBridge';
+import { isConcept } from '@/features/concept/flag';
 
 const StorePage = lazy(() => import('@/features/market/StorePage'));
 const BrowsePage = lazy(() => import('@/features/market/BrowsePage'));
@@ -15,6 +17,10 @@ const LibraryTab = lazy(() => import('@/features/player/LibraryTab'));
 const WalletsTab = lazy(() => import('@/features/player/WalletsTab'));
 const PurchasesTab = lazy(() => import('@/features/player/PurchasesTab'));
 const ProfileTab = lazy(() => import('@/features/player/ProfileTab'));
+
+const LobbyPage = lazy(() => import('@/features/concept/LobbyPage'));
+const MatchPage = lazy(() => import('@/features/concept/MatchPage'));
+const SettlePage = lazy(() => import('@/features/concept/SettlePage'));
 
 const StudioHome = lazy(() => import('@/features/studio/StudioHome'));
 const ApplyView = lazy(() => import('@/features/studio/StudioHome').then((m) => ({ default: m.ApplyView })));
@@ -45,6 +51,7 @@ const Root = () => (
     <Outlet />
     <AuthDialog />
     <CommandMenu />
+    {isConcept() && <DemoBridge />}
     <ScrollRestoration />
   </>
 );
@@ -69,6 +76,9 @@ export const router = createBrowserRouter([
               { path: 'profile', element: page(<ProfileTab />) },
             ],
           },
+          // Staged wager concept (features/concept) — only linked when ?concept=1.
+          { path: '/concept/lobby/:id', element: authed(<LobbyPage />) },
+          { path: '/concept/settle/:id', element: authed(<SettlePage />) },
           { path: '/studio', element: authed(<StudioHome />) },
           { path: '/studio/new', element: authed(<ApplyView />) },
           {
@@ -85,6 +95,7 @@ export const router = createBrowserRouter([
           },
         ],
       },
+      { path: '/concept/match/:id', element: authed(<MatchPage />) },
       { path: '/market/*', element: <LegacyMarket /> },
       { path: '/market', element: <Navigate to="/" replace /> },
       { path: '/library', element: <Navigate to="/player" replace /> },
