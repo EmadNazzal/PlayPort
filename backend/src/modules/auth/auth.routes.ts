@@ -23,7 +23,7 @@ const REFRESH_COOKIE = 'pp_refresh';
 const clientInfo = (req: Request): ClientInfo => ({ userAgent: req.get('user-agent'), ip: req.ip });
 
 /**
- * Browsers get the refresh token as an httpOnly cookie scoped to /auth, so page JS (and XSS)
+ * Browsers get the refresh token as an httpOnly cookie scoped to the auth routes, so page JS (and XSS)
  * can never read it. Native clients opt into receiving it in the body with `X-Token-Transport: body`.
  */
 const sendTokens = (req: Request, res: Response, tokens: IssuedTokens, status = 200, extra: object = {}) => {
@@ -31,7 +31,7 @@ const sendTokens = (req: Request, res: Response, tokens: IssuedTokens, status = 
     httpOnly: true,
     secure: isProduction,
     sameSite: 'strict',
-    path: '/auth',
+    path: config.REFRESH_COOKIE_PATH,
     expires: tokens.refreshTokenExpiresAt,
   });
   const wantsBody = req.get('x-token-transport') === 'body';
@@ -87,13 +87,13 @@ export const createAuthRouter = (auth: AuthService, sessions: SessionService): R
   router.post('/logout', handler({ body: RefreshSchema }, async ({ body }, req, res) => {
     const token = (req.cookies as Record<string, string | undefined>)[REFRESH_COOKIE] ?? body.refreshToken;
     if (token) await sessions.revoke(token);
-    res.clearCookie(REFRESH_COOKIE, { path: '/auth' });
+    res.clearCookie(REFRESH_COOKIE, { path: config.REFRESH_COOKIE_PATH });
     res.status(204).end();
   }));
 
   router.post('/logout-all', requireUser, handler({}, async (_input, req, res) => {
     await auth.logoutEverywhere(getUser(req).userId);
-    res.clearCookie(REFRESH_COOKIE, { path: '/auth' });
+    res.clearCookie(REFRESH_COOKIE, { path: config.REFRESH_COOKIE_PATH });
     res.status(204).end();
   }));
 
@@ -119,7 +119,7 @@ export const createAuthRouter = (auth: AuthService, sessions: SessionService): R
 
   router.post('/password/change', strict, requireUser, handler({ body: ChangePasswordSchema }, async ({ body }, req, res) => {
     await auth.changePassword(getUser(req).userId, body.currentPassword, body.newPassword);
-    res.clearCookie(REFRESH_COOKIE, { path: '/auth' });
+    res.clearCookie(REFRESH_COOKIE, { path: config.REFRESH_COOKIE_PATH });
     res.status(204).end();
   }));
 

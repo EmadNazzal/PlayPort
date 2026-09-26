@@ -16,7 +16,7 @@ import { sql } from 'drizzle-orm';
 import nacl from 'tweetnacl';
 import { createApp } from '../app.js';
 import { db, pool } from '../db/client.js';
-import { userRoles, users } from '../db/schema/index.js';
+import { games, userRoles, users } from '../db/schema/index.js';
 import type { SolanaGateway, VerifiedTransaction } from '../modules/payments/index.js';
 import { config } from '../shared/config.js';
 import type { Mail } from '../shared/mailer.js';
@@ -139,8 +139,10 @@ const starDrifter = await createGame({ token: nora }, nebula.id, {
   title: 'Star Drifter',
   slug: 'star-drifter',
   shortDescription: 'Drift between asteroid fields and outrun the void.',
-  genres: ['arcade', 'space'],
-  platforms: ['web'],
+  description:
+    'A momentum-based space racer where every drift charges your boost. Chain slingshots around dying stars, dodge collapsing asteroid belts and climb weekly leaderboards against pilots worldwide.',
+  genres: ['racing', 'arcade', 'space'],
+  platforms: ['web', 'windows', 'macos'],
   priceLamports: '500000000',
   minAge: 12,
 });
@@ -148,13 +150,109 @@ const pixelPals = await createGame({ token: devon }, nebula.id, {
   title: 'Pixel Pals',
   slug: 'pixel-pals',
   shortDescription: 'A cosy free-to-play pet collector.',
-  genres: ['casual'],
+  description: 'Hatch, raise and trade hand-drawn pixel pets. Decorate their island, visit friends and discover over 200 rare pals across the seasons.',
+  genres: ['casual', 'simulation'],
   platforms: ['web', 'ios', 'android'],
 });
 const voidRunner = await createGame({ token: devon }, nebula.id, { title: 'Void Runner', slug: 'void-runner', genres: ['runner'], priceLamports: '250000000' });
 const cloneWars = await createGame({ token: nora }, nebula.id, { title: 'Totally Original Game', slug: 'totally-original-game', genres: ['arcade'] });
 for (const g of [starDrifter, pixelPals, voidRunner, cloneWars]) await call('POST', `/games/${g.id}/submit`, { token: nora });
 note('Star Drifter (0.5 SOL), Pixel Pals (free), Void Runner (0.25 SOL), Totally Original Game — all submitted for review');
+
+step('More studios join and fill the catalog');
+type CatalogGame = { title: string; slug: string; short: string; description: string; genres: string[]; platforms: string[]; sol: number; minAge?: number };
+const STUDIOS: { name: string; slug: string; owner: string; country: string; description: string; games: CatalogGame[] }[] = [
+  {
+    name: 'Nebula Games',
+    slug: 'nebula-games',
+    owner: 'nora@nebula.dev',
+    country: 'IE',
+    description: '',
+    games: [
+      { title: 'Orbital Siege', slug: 'orbital-siege', short: 'Defend a ring-world from waves of drone swarms.', description: 'Build turrets along a rotating megastructure and bend gravity to redirect swarms into each other. Twelve sectors, a brutal endless mode and a co-op campaign for two.', genres: ['strategy', 'tower-defense', 'space'], platforms: ['web', 'windows'], sol: 0.8, minAge: 12 },
+      { title: 'Comet Tail', slug: 'comet-tail', short: 'One-touch arcade flyer through neon nebulae.', description: 'Tap to swing, release to fling. A hypnotic one-button arcade game with a synthwave soundtrack and daily seeded runs.', genres: ['arcade', 'casual'], platforms: ['web', 'ios', 'android'], sol: 0 },
+    ],
+  },
+  {
+    name: 'Ember Forge',
+    slug: 'ember-forge',
+    owner: 'rin@emberforge.dev',
+    country: 'JP',
+    description: 'Hand-crafted action RPGs with a love for ink and fire.',
+    games: [
+      { title: 'Ashen Crown', slug: 'ashen-crown', short: 'A fallen kingdom, a cursed blade, and a thousand embers.', description: 'A punishing ink-brushed action RPG. Parry, riposte and burn through six ruined provinces to reclaim a crown that does not want you. Every boss is a duel written like a poem.', genres: ['rpg', 'action', 'souls-like'], platforms: ['web', 'windows', 'macos', 'linux'], sol: 1.8, minAge: 16 },
+      { title: 'Lanternfall', slug: 'lanternfall', short: 'Guide lost spirits home before the last lantern dies.', description: 'A meditative puzzle-adventure across a floating festival town. Light paths, bend time and uncover why the spirits stopped coming home.', genres: ['puzzle', 'adventure'], platforms: ['web', 'ios'], sol: 0.4 },
+      { title: 'Blade & Blossom', slug: 'blade-and-blossom', short: 'Duel masters across four seasons of a blooming valley.', description: 'A fast, readable 1v1 fighting game with seasonal arenas that change the rules: slippery winter ice, blinding spring pollen, summer storms and falling autumn leaves.', genres: ['fighting', 'action', 'multiplayer'], platforms: ['web', 'windows'], sol: 0.6, minAge: 12 },
+      { title: 'Kitsune Road', slug: 'kitsune-road', short: 'A roguelike road trip with a shapeshifting fox.', description: 'Every run is a new road. Collect masks that grant forms, befriend spirits at roadside shrines and outwit the tanuki bandits. Free forever, with seasonal cosmetic drops.', genres: ['roguelike', 'adventure'], platforms: ['web', 'android'], sol: 0, minAge: 10 },
+    ],
+  },
+  {
+    name: 'Tidewater Interactive',
+    slug: 'tidewater',
+    owner: 'marco@tidewater.dev',
+    country: 'PT',
+    description: 'Ocean-obsessed studio making systemic survival and strategy games.',
+    games: [
+      { title: 'Abyssal', slug: 'abyssal', short: 'Survive the pressure. Descend the trench.', description: 'A tense survival horror set in a collapsing deep-sea research station. Manage oxygen, reroute power and listen carefully — something in the trench is learning your routines.', genres: ['horror', 'survival'], platforms: ['windows', 'macos', 'linux'], sol: 1.2, minAge: 18 },
+      { title: 'Harbor Kings', slug: 'harbor-kings', short: 'Build a trading empire one dock at a time.', description: 'A cosy-but-cutthroat port management sim. Negotiate with smugglers, weather storms, and grow a fishing village into the busiest harbor on the coast.', genres: ['strategy', 'simulation'], platforms: ['web', 'windows', 'macos'], sol: 0.9 },
+      { title: 'Reefbreak', slug: 'reefbreak', short: 'Arcade surfing on procedurally generated swells.', description: 'Read the wave, carve the face, land the aerial. Reefbreak turns real swell physics into a fast arcade score-chaser with a global daily wave.', genres: ['sports', 'arcade'], platforms: ['web', 'ios', 'android'], sol: 0.3 },
+      { title: 'Salt & Iron', slug: 'salt-and-iron', short: 'Naval tactics in a world of steam and sail.', description: 'Command a fleet in turn-based naval battles where wind, fog and ammunition matter. A branching campaign of 40 engagements and ranked online matches.', genres: ['strategy', 'tactics', 'multiplayer'], platforms: ['web', 'windows'], sol: 1.5, minAge: 12 },
+    ],
+  },
+  {
+    name: 'Glyph & Gear',
+    slug: 'glyph-and-gear',
+    owner: 'ines@glyphgear.dev',
+    country: 'DE',
+    description: 'Tiny team, big mechanics. Precision platformers and clever card games.',
+    games: [
+      { title: 'Clockwork Heart', slug: 'clockwork-heart', short: 'A precision platformer where time is your jump.', description: 'Rewind, pause and fast-forward the world around a tiny wind-up robot. 120 hand-built rooms, a speedrun mode and ghost races against friends.', genres: ['platformer', 'puzzle'], platforms: ['web', 'windows', 'macos', 'linux'], sol: 0.7 },
+      { title: 'Runeshard', slug: 'runeshard', short: 'Deckbuilding duels with living cards.', description: 'Cards evolve as you play them. Build decks from shards of forgotten runes, draft in weekly expeditions and duel on the ranked ladder. Free to play, no pay-to-win.', genres: ['card', 'strategy', 'multiplayer'], platforms: ['web', 'ios', 'android'], sol: 0, minAge: 10 },
+      { title: 'Neon Rally', slug: 'neon-rally', short: 'Top-down rally racing through a synthwave city.', description: 'Drift through rain-slick neon streets in a top-down racer tuned for tight controls. Split-screen for four, online time trials and a track editor.', genres: ['racing', 'arcade', 'multiplayer'], platforms: ['web', 'windows'], sol: 0.45 },
+      { title: 'Paper Mechs', slug: 'paper-mechs', short: 'Fold, arm and battle origami robots.', description: 'Design mechs out of folded paper, test them in physics-driven arenas and watch them crumple gloriously. A sandbox builder with a surprisingly deep campaign.', genres: ['simulation', 'action', 'sandbox'], platforms: ['web', 'windows', 'macos'], sol: 0.55 },
+      { title: 'Sigil', slug: 'sigil', short: 'Draw spells. Break the tower.', description: 'A gesture-driven roguelike: draw sigils with your mouse or finger to cast spells, combine strokes into combos and climb a tower that rearranges itself every night.', genres: ['roguelike', 'action'], platforms: ['web', 'ios'], sol: 0.35, minAge: 12 },
+    ],
+  },
+];
+
+const catalogGameIds: string[] = [];
+for (const studio of STUDIOS) {
+  let partnerId = nebula.id as string;
+  let ownerToken = nora;
+  if (studio.slug !== 'nebula-games') {
+    ownerToken = await register({ accountType: 'partner', email: studio.owner, password: SEED_PASSWORD, displayName: studio.name });
+    const partner = await call('POST', '/partners', {
+      token: ownerToken,
+      body: {
+        name: studio.name,
+        slug: studio.slug,
+        websiteUrl: `https://${studio.slug}.example.com`,
+        contactEmail: studio.owner,
+        country: studio.country,
+        description: studio.description,
+        payoutWalletAddress: keypair(`${studio.slug}-payout`).publicKey.toBase58(),
+      },
+    });
+    await call('POST', `/admin/partners/${partner.id}/review`, { token: admin, body: { decision: 'approve' } });
+    partnerId = partner.id;
+  }
+  for (const g of studio.games) {
+    const game = await createGame({ token: ownerToken }, partnerId, {
+      title: g.title,
+      slug: g.slug,
+      shortDescription: g.short,
+      description: g.description,
+      genres: g.genres,
+      platforms: g.platforms,
+      priceLamports: String(Math.round(g.sol * 1e9)),
+      ...(g.minAge !== undefined && { minAge: g.minAge }),
+    });
+    await call('POST', `/games/${game.id}/submit`, { token: ownerToken });
+    await call('POST', `/admin/games/${game.id}/review`, { token: admin, body: { decision: 'publish' } });
+    catalogGameIds.push(game.id);
+  }
+  note(`${studio.name}: ${studio.games.length} games published`);
+}
 
 step('Admin reviews games');
 await call('POST', `/admin/games/${starDrifter.id}/review`, { token: admin, body: { decision: 'publish' } });
@@ -184,6 +282,14 @@ const shadyPartner = await call('POST', '/partners', {
   body: { name: 'Shady Games', slug: 'shady-games', websiteUrl: 'https://shady.example.com', contactEmail: 'owner@shady.dev', payoutWalletAddress: keypair('shady-payout').publicKey.toBase58() },
 });
 await call('POST', `/admin/partners/${shadyPartner.id}/review`, { token: admin, body: { decision: 'reject', reason: 'Could not verify the business' } });
+
+step('Spreading release dates over the last few months');
+const published = await db.select({ id: games.id }).from(games).where(sql`${games.status} = 'published'`).orderBy(games.createdAt);
+for (const [i, g] of published.entries()) {
+  const daysAgo = (published.length - i) * 6 + (i % 3);
+  await db.update(games).set({ publishedAt: new Date(Date.now() - daysAgo * 86_400_000) }).where(sql`${games.id} = ${g.id}`);
+}
+note(`${published.length} published games`);
 
 step('Gamer Leo: email sign-up, verifies email, links a wallet, buys Star Drifter, claims Pixel Pals');
 const leo = await register({ accountType: 'gamer', email: 'leo@gamer.dev', password: SEED_PASSWORD, username: 'leo' });
@@ -223,6 +329,7 @@ Done. Email accounts all use the password in SEED_PASSWORD (src/scripts/seed.ts)
 
   ava@playport.dev    admin
   nora@nebula.dev     partner owner — Nebula Games (approved)
+  rin@emberforge.dev, marco@tidewater.dev, ines@glyphgear.dev — owners of the other approved studios
   devon@nebula.dev    gamer + Nebula developer
   kai@kraken.dev      partner owner — Kraken Studio (pending)
   owner@shady.dev     partner owner — Shady Games (rejected)

@@ -17,7 +17,7 @@ PlayPort/
 │       ├── games/        # catalog and review workflow
 │       ├── payments/     # SOL purchases verified on-chain
 │       └── admin/        # users, roles, reviews, audit log
-├── frontend/             # React + Vite + TypeScript app, organised by feature
+├── frontend/             # React + Vite storefront: landing, market, checkout, library
 ├── docs/best-practices/  # how we write backend TypeScript and React
 └── .claude/skills/       # AI agent skills (solana.new), usable from Claude Code
 ```
@@ -28,8 +28,10 @@ Requires Node.js 20+ and Docker. Backend setup (database, env, first admin) is i
 [backend/README.md](backend/README.md).
 
 ```bash
-cd frontend && npm install && npm run dev    # app on http://localhost:5173
+cd frontend && cp .env.example .env && npm install && npm run dev    # http://localhost:5173
 ```
+
+Frontend structure and the design system are in [frontend/README.md](frontend/README.md).
 
 ## Engineering guidelines
 

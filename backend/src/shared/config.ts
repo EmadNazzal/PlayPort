@@ -25,6 +25,8 @@ const EnvSchema = z.object({
   /** Domain shown in the Sign-In With Solana message; must match the frontend's host. */
   APP_DOMAIN: z.string().default('localhost:5173'),
   APP_URL: z.string().url().default('http://localhost:5173'),
+  /** Path the refresh cookie is scoped to, as the browser sees it (e.g. `/api/auth` behind the Vite proxy). */
+  REFRESH_COOKIE_PATH: z.string().startsWith('/').default('/auth'),
 
   SOLANA_RPC_URL: z.string().url().default('https://api.devnet.solana.com'),
   PAYMENT_TTL_MINUTES: z.coerce.number().int().positive().default(15),

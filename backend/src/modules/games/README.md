@@ -9,7 +9,8 @@ Only published games of approved partners appear in the public catalog.
 
 | Method | Path | Auth |
 | --- | --- | --- |
-| GET | `/games?search=&genre=&limit=&offset=` | public |
+| GET | `/games?search=&genre=&partner=&price=free\|paid&sort=newest\|price_asc\|price_desc\|title&limit=&offset=` | public |
+| GET | `/games/genres` | public — genres with game counts |
 | GET | `/games/:slug` | public |
 | GET | `/games/manage?partnerId=` | `games:manage` + partner member / API key |
 | POST | `/games` | `games:manage` — `{ partnerId, title, slug, launchUrl, ... }` |

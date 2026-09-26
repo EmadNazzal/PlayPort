@@ -29,7 +29,13 @@ const UpdateSchema = z
   .partial()
   .refine((v) => Object.keys(v).length > 0, 'Nothing to update');
 
-const CatalogQuery = zPagination.extend({ search: z.string().trim().max(100).optional(), genre: zTag.optional() });
+const CatalogQuery = zPagination.extend({
+  search: z.string().trim().max(100).optional(),
+  genre: zTag.optional(),
+  partner: zSlug.optional(),
+  price: z.enum(['free', 'paid']).optional(),
+  sort: z.enum(['newest', 'price_asc', 'price_desc', 'title']).optional(),
+});
 
 export const createGameRouter = (games: GameService): Router => {
   const router = Router();
@@ -40,8 +46,12 @@ export const createGameRouter = (games: GameService): Router => {
     res.json(await games.listPublic(query));
   }));
 
+  router.get('/genres', handler({}, async (_i, _req, res) => {
+    res.json(await games.listGenres());
+  }));
+
   // ----- partner management (users with partner membership, or partner API keys) -----
-  // Declared before '/:slug' so 'manage' isn't read as a slug.
+  // Declared before '/:slug' so 'manage' and 'genres' aren't read as slugs.
 
   router.get('/manage', requireAuth, requirePermission('games:manage'), handler({ query: z.object({ partnerId: zId }) }, async ({ query }, req, res) => {
     res.json(await games.listForPartner(getPrincipal(req), query.partnerId));

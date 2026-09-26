@@ -1,4 +1,4 @@
-import { and, arrayContains, desc, eq, ilike, isNull, or, type SQL } from 'drizzle-orm';
+import { and, arrayContains, asc, count, desc, eq, gt, ilike, isNull, or, sql, type SQL } from 'drizzle-orm';
 import type { Db } from '../../db/client.js';
 import { gameEntitlements, games, partners } from '../../db/schema/index.js';
 import { audit } from '../../shared/audit.js';
@@ -48,6 +48,24 @@ const publicColumns = {
 
 const isListed = and(eq(games.status, 'published'), eq(partners.status, 'approved'));
 
+export type CatalogSort = 'newest' | 'price_asc' | 'price_desc' | 'title';
+export type CatalogFilter = {
+  search?: string | undefined;
+  genre?: string | undefined;
+  partner?: string | undefined;
+  price?: 'free' | 'paid' | undefined;
+  sort?: CatalogSort | undefined;
+  limit: number;
+  offset: number;
+};
+
+const SORTS: Record<CatalogSort, SQL[]> = {
+  newest: [desc(games.publishedAt)],
+  price_asc: [asc(games.priceLamports)],
+  price_desc: [desc(games.priceLamports)],
+  title: [asc(games.title)],
+};
+
 export const createGameService = (db: Db) => {
   const getById = async (id: string) => {
     const [game] = await db.select().from(games).where(eq(games.id, id));
@@ -78,22 +96,35 @@ export const createGameService = (db: Db) => {
       return row;
     },
 
-    listPublic(filter: { search?: string | undefined; genre?: string | undefined; limit: number; offset: number }) {
+    listPublic(filter: CatalogFilter) {
       const conditions: (SQL | undefined)[] = [isListed];
       if (filter.search) {
         const term = `%${filter.search.replace(/[%_\\]/g, '\\$&')}%`;
         conditions.push(or(ilike(games.title, term), ilike(games.shortDescription, term)));
       }
       if (filter.genre) conditions.push(arrayContains(games.genres, [filter.genre]));
+      if (filter.partner) conditions.push(eq(partners.slug, filter.partner));
+      if (filter.price === 'free') conditions.push(eq(games.priceLamports, 0n));
+      if (filter.price === 'paid') conditions.push(gt(games.priceLamports, 0n));
       return db
         .select(publicColumns)
         .from(games)
         .innerJoin(partners, eq(partners.id, games.partnerId))
         .where(and(...conditions))
-        .orderBy(desc(games.publishedAt))
+        .orderBy(...SORTS[filter.sort ?? 'newest'], asc(games.id))
         .limit(filter.limit)
         .offset(filter.offset);
     },
+
+    /** Genres present in the public catalog, most common first. */
+    listGenres: () =>
+      db
+        .select({ genre: sql<string>`g.genre`, games: count() })
+        .from(sql`${games} cross join lateral unnest(${games.genres}) as g(genre)`)
+        .innerJoin(partners, eq(partners.id, games.partnerId))
+        .where(isListed)
+        .groupBy(sql`g.genre`)
+        .orderBy(desc(count()), asc(sql`g.genre`)),
 
     async getPublicBySlug(slug: string) {
       const [row] = await db.select(publicColumns).from(games).innerJoin(partners, eq(partners.id, games.partnerId)).where(and(eq(games.slug, slug), isListed));

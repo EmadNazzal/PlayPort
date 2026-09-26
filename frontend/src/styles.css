@@ -1,0 +1,264 @@
+@import 'tailwindcss';
+
+/* ------------------------------------------------------------------
+   Night Market — design tokens
+   Art supplies the colour; the chrome stays warm ink. One accent per
+   job: green = buy/confirmed, amber = free/sale, purple = wallet only.
+------------------------------------------------------------------- */
+@theme {
+  --color-ink: #0b0c10;
+  --color-ink-2: #101218;
+  --color-surface: #15171d;
+  --color-raised: #1e2129;
+  --color-hover: #262a33;
+  --color-line: rgb(255 255 255 / 0.08);
+  --color-line-strong: rgb(255 255 255 / 0.16);
+  --color-text: #f2efe9;
+  --color-muted: #8c8f99;
+  --color-faint: #5d606b;
+  --color-go: #14f195;
+  --color-go-deep: #0a3d2a;
+  --color-lantern: #ffb547;
+  --color-wallet: #9945ff;
+  --color-danger: #ff5a4e;
+
+  --font-display: 'Bricolage Grotesque', ui-serif, Georgia, serif;
+  --font-sans: 'Geist', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, SFMono-Regular, monospace;
+
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+
+  --animate-marquee: marquee var(--marquee-duration, 60s) linear infinite;
+  --animate-marquee-reverse: marquee var(--marquee-duration, 60s) linear infinite reverse;
+  --animate-rise: rise 700ms var(--ease-out) both;
+
+  @keyframes marquee {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(24px);
+      filter: blur(6px);
+    }
+  }
+}
+
+@layer base {
+  :root {
+    color-scheme: dark;
+    background: var(--color-ink);
+  }
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    min-height: 100dvh;
+    background: var(--color-ink);
+    color: var(--color-text);
+    font-family: var(--font-sans);
+    font-feature-settings: 'ss01', 'cv11';
+  }
+  ::selection {
+    background: var(--color-go);
+    color: var(--color-ink);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-go);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+}
+
+@layer components {
+  /* Small uppercase label used above headings, like a lantern sign. */
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+
+  /* Film grain, for hero surfaces only. */
+  .grain::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.07;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* Every pressable element confirms the press. */
+  .pressable {
+    transition: transform 160ms var(--ease-out);
+  }
+  .pressable:active {
+    transform: scale(0.97);
+  }
+
+  /* Scroll reveals — see components/Reveal.tsx */
+  .reveal {
+    opacity: 0;
+    transform: translateY(32px);
+    filter: blur(6px);
+    transition:
+      opacity 900ms var(--ease-out) var(--reveal-delay, 0ms),
+      transform 900ms var(--ease-out) var(--reveal-delay, 0ms),
+      filter 900ms var(--ease-out) var(--reveal-delay, 0ms);
+  }
+  .reveal[data-shown] {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+  .reveal-clip-inner {
+    clip-path: inset(0 0 100% 0);
+    transform: translateY(40px);
+    transition:
+      clip-path 1000ms var(--ease-in-out) var(--reveal-delay, 0ms),
+      transform 1000ms var(--ease-out) var(--reveal-delay, 0ms);
+  }
+  .reveal-clip[data-shown] .reveal-clip-inner {
+    clip-path: inset(0 0 0 0);
+    transform: none;
+  }
+
+  /* Stacked crossfade layers (spotlight) — CSS so slide changes never depend on rAF. */
+  .fade-layer {
+    opacity: 0;
+    transform: scale(1.04);
+    filter: blur(8px);
+    transition:
+      opacity 700ms var(--ease-out),
+      transform 1200ms var(--ease-out),
+      filter 700ms var(--ease-out);
+  }
+  .fade-layer[data-active] {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+  .fade-copy {
+    opacity: 0;
+    transform: translateY(10px);
+    transition:
+      opacity 150ms ease,
+      transform 150ms ease;
+    pointer-events: none;
+  }
+  .fade-copy[data-active] {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+    transition:
+      opacity 450ms var(--ease-out) 120ms,
+      transform 450ms var(--ease-out) 120ms;
+  }
+
+  /* Checkout success tick, drawn with the stroke. */
+  .draw {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: draw 500ms var(--ease-out) forwards;
+    animation-delay: var(--draw-delay, 0ms);
+  }
+  @keyframes draw {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Base UI popups: enter/exit via data-starting-style / data-ending-style. */
+  .popup-scale {
+    transform-origin: var(--transform-origin);
+    transition:
+      transform 180ms var(--ease-out),
+      opacity 180ms var(--ease-out);
+  }
+  .popup-scale[data-starting-style],
+  .popup-scale[data-ending-style] {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  .popup-scale[data-ending-style] {
+    transition-duration: 120ms;
+  }
+
+  .modal {
+    transition:
+      transform 260ms var(--ease-out),
+      opacity 260ms var(--ease-out),
+      filter 260ms var(--ease-out);
+  }
+  .modal[data-starting-style],
+  .modal[data-ending-style] {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+    filter: blur(4px);
+  }
+  .modal[data-ending-style] {
+    transition-duration: 160ms;
+  }
+
+  .backdrop {
+    transition: opacity 260ms var(--ease-out);
+  }
+  .backdrop[data-starting-style],
+  .backdrop[data-ending-style] {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+  .modal,
+  .popup-scale,
+  .fade-layer,
+  .fade-copy {
+    transition-property: opacity;
+  }
+  .reveal,
+  .reveal-clip-inner {
+    transform: none;
+    filter: none;
+    clip-path: none;
+    transition-property: opacity;
+  }
+  .reveal-clip-inner {
+    opacity: 0;
+  }
+  .reveal-clip[data-shown] .reveal-clip-inner {
+    opacity: 1;
+  }
+}
