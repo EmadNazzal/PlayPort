@@ -21,7 +21,7 @@ export const AuthDialog = () => {
     navigate(returnTo);
   };
 
-  const heading = tab === 'wallet' ? 'Enter the market' : mode === 'signup' ? 'Create your account' : 'Welcome back';
+  const heading = tab === 'wallet' ? 'Sign in to PlayPort' : mode === 'signup' ? 'Create your account' : 'Welcome back';
 
   return (
     <Dialog
@@ -55,7 +55,7 @@ export const AuthDialog = () => {
           />
         </Tabs.Panel>
         <Tabs.Panel value="email" className="mt-5 outline-none">
-          <EmailForm mode={mode} onModeChange={setMode} onDone={done} />
+          <EmailForm mode={mode} onModeChange={setMode} onDone={(to) => { setOpen(false); navigate(to ?? returnTo); }} />
         </Tabs.Panel>
       </Tabs.Root>
       <p className="mt-6 text-center text-[11px] leading-relaxed text-faint">

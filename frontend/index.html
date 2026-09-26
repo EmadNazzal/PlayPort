@@ -6,6 +6,15 @@
     <meta name="theme-color" content="#0B0C10" />
     <meta name="description" content="PlayPort — a night market for games. Discover worlds from independent studios and pay straight from your Solana wallet." />
     <title>PlayPort — the night market for games</title>
+    <script>
+      // Set the theme before first paint so there's no flash of the wrong one.
+      (function () {
+        var p = 'system';
+        try { p = localStorage.getItem('playport-theme') || 'system'; } catch (e) {}
+        var light = p === 'light' || (p === 'system' && matchMedia('(prefers-color-scheme: light)').matches);
+        document.documentElement.dataset.theme = light ? 'light' : 'dark';
+      })();
+    </script>
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

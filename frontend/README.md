@@ -15,29 +15,32 @@ refresh cookie survives the `/api` proxy.
 
 | Path | Page |
 | --- | --- |
-| `/` | Landing — WebGL hero, game-art montage, how it works, studios, FAQ. Sign in / sign up open the auth dialog. |
-| `/market` | Store — spotlight carousel, genre chips, rails, studios |
-| `/market/browse` | Grid with price / genre / platform / studio filters and sort (state lives in the URL) |
-| `/market/games/:slug` | Game page — buy, claim or play; checkout dialog |
-| `/library` | Owned games (signed in) |
-| `/account` | Profile, linked wallets, purchase receipts (signed in) |
+| `/` | Store — spotlight carousel, genre chips, rails, studios |
+| `/browse` | Grid with price / genre / platform / studio filters and sort (state lives in the URL) |
+| `/games/:slug` | Game page — buy, claim or play; checkout dialog |
+| `/player` | **Player area** — Library, `/wallets`, `/purchases`, `/profile` (signed in) |
+| `/studio` | **Studio area** — apply to become a partner, or jump to your studio (signed in) |
+| `/studio/new` | Apply for another studio |
+| `/studio/:id` | Studio dashboard — stats and games; tabs `/sales`, `/team`, `/settings` |
+| `/studio/:id/games/new`, `/studio/:id/games/:gameId` | Game editor with a live poster preview |
 
-⌘K opens search from anywhere.
+Sign in / sign up is a dialog available everywhere (header button, or any signed-in-only route).
+Email sign-up asks "I play games" vs "I make games"; studio accounts land on `/studio`.
+⌘K opens search. Old `/market/...`, `/library` and `/account` URLs redirect.
 
 ## Structure
 
 ```
 src/
 ├── app/            # providers, router
-├── components/     # ShaderField (WebGL), Reveal, ui/ primitives (Button, Dialog, Price, ...)
+├── components/     # ThemeToggle, ui/ primitives (Button, Dialog, Field, Price, ...)
 ├── features/
 │   ├── auth/       # auth dialog (wallet + email), RequireAuth
 │   ├── wallets/    # Solana providers, wallet picker, wallet chip, sign-in / link / pay flows
-│   ├── landing/    # marketing page sections
-│   ├── market/     # store, browse, game page, checkout, generative covers, ⌘K
-│   ├── library/
-│   └── account/
-└── lib/            # api client, session, React Query hooks, types, formatting
+│   ├── market/     # store, browse, game page, checkout, ⌘K, poster/ (illustrated key art)
+│   ├── player/     # player area: library, wallets, purchases, profile
+│   └── studio/     # partner area: apply, dashboard, game editor, sales, team, settings
+└── lib/            # api client, session, theme, React Query hooks, types, formatting
 ```
 
 ## Auth
@@ -60,22 +63,29 @@ Devnet by default. Get test SOL at https://faucet.solana.com.
 
 ## Design system — "Night Market"
 
-The art supplies the colour; the chrome stays warm ink. Tokens are in `src/styles.css`.
+The art supplies the colour; the chrome stays neutral. Tokens are in `src/styles.css`. Dark is the
+default; `[data-theme='light']` on `<html>` swaps the values. Users pick Light / Dark / System from
+the header (`lib/theme.ts`, persisted in localStorage); an inline script in `index.html` applies it
+before first paint so there's no flash.
 
 | Token | Use | Never |
 | --- | --- | --- |
-| `go` #14F195 | Buy, pay, confirmed, primary CTA | Body text, decoration |
-| `lantern` #FFB547 | "Free" badges, sale, highlights | Buttons |
-| `wallet` #9945FF | The connected-wallet ring only | Anywhere else |
+| `go` #14F195 | Buy / pay / confirm buttons (`text-on-go` on top) | Body text |
+| `go-fg` | Green *text*: "Live", "Owned", success | Backgrounds |
+| `lantern` / `lantern-fg` | Free badges, in-review, warnings (tint / text) | Buttons |
+| `wallet` | The connected-wallet ring only | Anywhere else |
+| `veil` | Overlay tints: `bg-veil/[0.05]`, `ring-veil/10` (white on dark, black on light) | Hard-coded `white/` or `black/` |
 | `ink` / `surface` / `raised` | Page / cards / popovers | — |
 
-- **Type:** Bricolage Grotesque (display, use `wdth` 76–85 for headlines), Geist (UI), Geist Mono
+- Never hard-code `white/…` or `text-green-…` — use the tokens so both themes work.
+- **Type:** Bricolage Grotesque (display, `wdth` 76–85 for headlines), Geist (UI), Geist Mono
   (prices, addresses, eyebrows).
-- **Game art:** `GameCover` generates key art per slug and genre until a studio uploads
-  `thumbnailUrl` / `bannerUrl`. Titles and prices are always visible on cards — never hover-only.
-- **Motion:** entrances and crossfades are CSS (`Reveal`, `.fade-layer`, `animate-rise`) so they
-  stay smooth when the main thread is busy. `motion` is for pointer-driven springs (tilt cards)
-  and scroll-linked values. UI transitions ≤ 300 ms with the `--ease-out` curve; pressables scale
-  to 0.97; hover effects sit behind `@media (hover: hover)`; ⌘K has no animation. Respect
-  `prefers-reduced-motion` (handled globally and in `ShaderField`).
-- **Spectacle stays on the landing page.** No WebGL, smooth scrolling or autoplay in the store.
+- **Game art:** `GameCover` shows the studio's image, or an illustrated poster from
+  `market/poster` (per-game recipes, genre fallbacks). Cards are 2:3; titles and prices are always
+  visible — never hover-only.
+- **Motion:** entrances and crossfades are CSS (`animate-rise`, `.fade-layer`) so they stay
+  smooth when the main thread is busy; `motion` is for scroll-linked values. UI transitions
+  ≤ 300 ms with `--ease-out`; pressables scale to 0.97; hover effects sit behind
+  `@media (hover: hover)`; ⌘K has no animation; `prefers-reduced-motion` is respected.
+- **Responsive hiding:** components set their own `display`, so hide them with a wrapper
+  (`<span className="hidden sm:block"><Price/></span>`), not by passing `hidden` in `className`.

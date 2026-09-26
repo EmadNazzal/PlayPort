@@ -25,7 +25,7 @@ const filter = (value: string, search: string) => {
 };
 
 const itemClass =
-  'flex cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-text/85 data-[selected=true]:bg-white/[0.07] data-[selected=true]:text-text';
+  'flex cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-text/85 data-[selected=true]:bg-veil/[0.07] data-[selected=true]:text-text';
 
 /**
  * ⌘K palette. Opened hundreds of times by power users, so it has no open/close animation —
@@ -72,7 +72,7 @@ export const CommandMenu = () => {
 
               <Command.Group heading="Games" className="[&_[cmdk-group-heading]]:eyebrow [&_[cmdk-group-heading]]:px-3 [&_[cmdk-group-heading]]:pt-2 [&_[cmdk-group-heading]]:pb-1.5">
                 {games.map((g) => (
-                  <Command.Item key={g.id} value={`${g.title} ${g.partner.name} ${g.genres.join(' ')}`} onSelect={() => go(`/market/games/${g.slug}`)} className={itemClass}>
+                  <Command.Item key={g.id} value={`${g.title} ${g.partner.name} ${g.genres.join(' ')}`} onSelect={() => go(`/games/${g.slug}`)} className={itemClass}>
                     <span className="size-9 shrink-0 overflow-hidden rounded-lg">
                       <GameCover game={g} showTitle={false} />
                     </span>
@@ -87,7 +87,7 @@ export const CommandMenu = () => {
 
               <Command.Group heading="Genres" className="[&_[cmdk-group-heading]]:eyebrow [&_[cmdk-group-heading]]:px-3 [&_[cmdk-group-heading]]:pt-3 [&_[cmdk-group-heading]]:pb-1.5">
                 {genres.map(({ genre, games: count }) => (
-                  <Command.Item key={genre} value={`genre ${genre}`} onSelect={() => go(`/market/browse?genre=${genre}`)} className={itemClass}>
+                  <Command.Item key={genre} value={`genre ${genre}`} onSelect={() => go(`/browse?genre=${genre}`)} className={itemClass}>
                     <Tag className="size-4 text-muted" />
                     <span className="flex-1">{titleCase(genre)}</span>
                     <span className="font-mono text-xs text-faint">{count}</span>
@@ -96,18 +96,18 @@ export const CommandMenu = () => {
               </Command.Group>
 
               <Command.Group heading="Go to" className="[&_[cmdk-group-heading]]:eyebrow [&_[cmdk-group-heading]]:px-3 [&_[cmdk-group-heading]]:pt-3 [&_[cmdk-group-heading]]:pb-1.5">
-                <Command.Item onSelect={() => go('/market')} className={itemClass}>
+                <Command.Item onSelect={() => go('/')} className={itemClass}>
                   <Store className="size-4 text-muted" /> Store
                 </Command.Item>
-                <Command.Item onSelect={() => go('/market/browse')} className={itemClass}>
+                <Command.Item onSelect={() => go('/browse')} className={itemClass}>
                   <Gamepad2 className="size-4 text-muted" /> Browse all games
                 </Command.Item>
                 {token && (
                   <>
-                    <Command.Item onSelect={() => go('/library')} className={itemClass}>
+                    <Command.Item onSelect={() => go('/player')} className={itemClass}>
                       <Library className="size-4 text-muted" /> Library
                     </Command.Item>
-                    <Command.Item onSelect={() => go('/account')} className={itemClass}>
+                    <Command.Item onSelect={() => go('/player/wallets')} className={itemClass}>
                       <User className="size-4 text-muted" /> Account & wallets
                     </Command.Item>
                     <Command.Item

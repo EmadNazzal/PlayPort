@@ -33,7 +33,7 @@ export const Spotlight = ({ games }: { games: Game[] }) => {
       aria-roledescription="carousel"
       aria-label="Featured games"
     >
-      <div className="relative aspect-[4/5] overflow-hidden rounded-3xl bg-surface ring-1 ring-white/[0.07] sm:aspect-[16/9]">
+      <div className="relative aspect-[4/5] overflow-hidden rounded-3xl bg-surface ring-1 ring-veil/[0.07] sm:aspect-[16/9]">
         {/* All slides stay mounted and crossfade in CSS, so a swap never waits on JS frames. */}
         {games.map((g, i) => (
           <div key={g.id} className="fade-layer absolute inset-0" data-active={i === index ? '' : undefined} aria-hidden={i !== index}>
@@ -56,7 +56,7 @@ export const Spotlight = ({ games }: { games: Game[] }) => {
             <h2 className="text-[clamp(2.4rem,5.5vw,4.75rem)] leading-[0.9] font-bold tracking-[-0.04em] uppercase [font-variation-settings:'wdth'_78]">{g.title}</h2>
             <p className="mt-4 max-w-md text-[15px] leading-relaxed text-text/75">{g.shortDescription}</p>
             <div className="mt-7 flex items-center gap-5">
-              <Link to={`/market/games/${g.slug}`} className={buttonStyles({ intent: 'primary', size: 'lg' })}>
+              <Link to={`/games/${g.slug}`} className={buttonStyles({ intent: 'primary', size: 'lg' })}>
                 View game <ArrowRight />
               </Link>
               <Price lamports={g.priceLamports} size="md" showFiat />
@@ -77,7 +77,7 @@ export const Spotlight = ({ games }: { games: Game[] }) => {
                 aria-label={`Show ${g.title}`}
                 className={cn(
                   'pressable relative flex w-full items-center gap-3 overflow-hidden rounded-2xl p-2 text-left transition-colors duration-200',
-                  active ? 'bg-raised' : 'hover:bg-white/[0.04]',
+                  active ? 'bg-raised' : 'hover:bg-veil/[0.04]',
                 )}
               >
                 <span className="hidden aspect-[3/4] w-12 shrink-0 overflow-hidden rounded-lg lg:block">
@@ -87,7 +87,7 @@ export const Spotlight = ({ games }: { games: Game[] }) => {
                   <span className={cn('block truncate text-sm', active ? 'text-text' : 'text-muted')}>{g.title}</span>
                   <span className="block truncate text-xs text-faint">{g.partner.name}</span>
                 </span>
-                <span className="absolute inset-x-0 bottom-0 h-[3px] bg-white/[0.06] lg:inset-x-2 lg:bottom-1 lg:rounded-full">
+                <span className="absolute inset-x-0 bottom-0 h-[3px] bg-veil/[0.06] lg:inset-x-2 lg:bottom-1 lg:rounded-full">
                   {active && (
                     <span
                       key={`${g.id}-${index}`}

@@ -30,3 +30,28 @@ export const titleCase = (s: string) =>
     .split('-')
     .map((w) => ACRONYMS[w] ?? w.charAt(0).toUpperCase() + w.slice(1))
     .join(' ');
+
+/** "0.45" → "450000000". Exact string arithmetic — never floats for money. Null if malformed. */
+export const solToLamports = (sol: string): string | null => {
+  const m = /^(\d+)(?:\.(\d{1,9}))?$/.exec(sol.trim());
+  if (!m) return null;
+  return (BigInt(m[1]!) * 1_000_000_000n + BigInt((m[2] ?? '').padEnd(9, '0'))).toString();
+};
+
+/** "450000000" → "0.45". */
+export const lamportsToSolString = (lamports: string): string => {
+  const l = BigInt(lamports);
+  const whole = l / 1_000_000_000n;
+  const frac = (l % 1_000_000_000n).toString().padStart(9, '0').replace(/0+$/, '');
+  return frac ? `${whole}.${frac}` : whole.toString();
+};
+
+export const slugify = (s: string) =>
+  s
+    .toLowerCase()
+    .normalize('NFKD')
+    .replace(/[̀-ͯ]/g, '')
+    .replace(/&/g, ' and ')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 64);

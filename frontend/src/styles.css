@@ -2,8 +2,11 @@
 
 /* ------------------------------------------------------------------
    Night Market — design tokens
-   Art supplies the colour; the chrome stays warm ink. One accent per
+   Art supplies the colour; the chrome stays neutral. One accent per
    job: green = buy/confirmed, amber = free/sale, purple = wallet only.
+   Dark is the default; [data-theme='light'] swaps the values below.
+   `*-fg` accents are the text-safe variants (darker in light mode);
+   `veil` is the overlay tint (white on dark, black on light).
 ------------------------------------------------------------------- */
 @theme {
   --color-ink: #0b0c10;
@@ -16,9 +19,12 @@
   --color-text: #f2efe9;
   --color-muted: #8c8f99;
   --color-faint: #5d606b;
+  --color-veil: #ffffff;
   --color-go: #14f195;
-  --color-go-deep: #0a3d2a;
+  --color-go-fg: #14f195;
+  --color-on-go: #06140d;
   --color-lantern: #ffb547;
+  --color-lantern-fg: #ffb547;
   --color-wallet: #9945ff;
   --color-danger: #ff5a4e;
 
@@ -30,15 +36,8 @@
   --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
   --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
 
-  --animate-marquee: marquee var(--marquee-duration, 60s) linear infinite;
-  --animate-marquee-reverse: marquee var(--marquee-duration, 60s) linear infinite reverse;
   --animate-rise: rise 700ms var(--ease-out) both;
 
-  @keyframes marquee {
-    to {
-      transform: translateX(-50%);
-    }
-  }
   @keyframes rise {
     from {
       opacity: 0;
@@ -52,6 +51,25 @@
   :root {
     color-scheme: dark;
     background: var(--color-ink);
+  }
+  :root[data-theme='light'] {
+    color-scheme: light;
+    --color-ink: #f5f3ee;
+    --color-ink-2: #edeae3;
+    --color-surface: #ffffff;
+    --color-raised: #ffffff;
+    --color-hover: #efece5;
+    --color-line: rgb(24 20 12 / 0.09);
+    --color-line-strong: rgb(24 20 12 / 0.17);
+    --color-text: #16150f;
+    --color-muted: #66645d;
+    --color-faint: #9a978e;
+    --color-veil: #000000;
+    --color-go: #14f195;
+    --color-go-fg: #067a4f;
+    --color-lantern-fg: #9a5800;
+    --color-wallet: #7c3aed;
+    --color-danger: #cf3326;
   }
   html {
     -webkit-font-smoothing: antialiased;
@@ -67,7 +85,7 @@
   }
   ::selection {
     background: var(--color-go);
-    color: var(--color-ink);
+    color: var(--color-on-go);
   }
   :focus-visible {
     outline: 2px solid var(--color-go);
@@ -95,50 +113,12 @@
     color: var(--color-muted);
   }
 
-  /* Film grain, for hero surfaces only. */
-  .grain::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    opacity: 0.07;
-    mix-blend-mode: overlay;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  }
-
   /* Every pressable element confirms the press. */
   .pressable {
     transition: transform 160ms var(--ease-out);
   }
   .pressable:active {
     transform: scale(0.97);
-  }
-
-  /* Scroll reveals — see components/Reveal.tsx */
-  .reveal {
-    opacity: 0;
-    transform: translateY(32px);
-    filter: blur(6px);
-    transition:
-      opacity 900ms var(--ease-out) var(--reveal-delay, 0ms),
-      transform 900ms var(--ease-out) var(--reveal-delay, 0ms),
-      filter 900ms var(--ease-out) var(--reveal-delay, 0ms);
-  }
-  .reveal[data-shown] {
-    opacity: 1;
-    transform: none;
-    filter: none;
-  }
-  .reveal-clip-inner {
-    clip-path: inset(0 0 100% 0);
-    transform: translateY(40px);
-    transition:
-      clip-path 1000ms var(--ease-in-out) var(--reveal-delay, 0ms),
-      transform 1000ms var(--ease-out) var(--reveal-delay, 0ms);
-  }
-  .reveal-clip[data-shown] .reveal-clip-inner {
-    clip-path: inset(0 0 0 0);
-    transform: none;
   }
 
   /* Stacked crossfade layers (spotlight) — CSS so slide changes never depend on rAF. */
@@ -248,17 +228,5 @@
   .fade-copy {
     transition-property: opacity;
   }
-  .reveal,
-  .reveal-clip-inner {
-    transform: none;
-    filter: none;
-    clip-path: none;
-    transition-property: opacity;
-  }
-  .reveal-clip-inner {
-    opacity: 0;
-  }
-  .reveal-clip[data-shown] .reveal-clip-inner {
-    opacity: 1;
-  }
+
 }

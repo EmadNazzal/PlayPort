@@ -27,7 +27,7 @@ const Studios = ({ games }: { games: Game[] }) => {
       <h2 className="mb-5 font-display text-2xl font-semibold tracking-[-0.02em] sm:text-[28px]">Studios on PlayPort</h2>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {studios.map(([slug, list]) => (
-          <Link key={slug} to={`/market/browse?partner=${slug}`} className="group pressable relative overflow-hidden rounded-2xl border border-line bg-surface p-5 transition-colors duration-200 hover:border-line-strong">
+          <Link key={slug} to={`/browse?partner=${slug}`} className="group pressable relative overflow-hidden rounded-2xl border border-line bg-surface p-5 transition-colors duration-200 hover:border-line-strong">
             <div className="mb-8 flex -space-x-3">
               {list.slice(0, 4).map((g) => (
                 <span key={g.id} className="aspect-[3/4] w-12 overflow-hidden rounded-lg ring-2 ring-surface transition-transform duration-300 ease-(--ease-out) group-hover:-translate-y-1 [&:nth-child(2)]:delay-[30ms] [&:nth-child(3)]:delay-[60ms] [&:nth-child(4)]:delay-[90ms]">
@@ -79,9 +79,9 @@ export default function StorePage() {
         {genres.map(({ genre, games: count }, i) => (
           <Link
             key={genre}
-            to={`/market/browse?genre=${genre}`}
+            to={`/browse?genre=${genre}`}
             className={cn(
-              'pressable shrink-0 rounded-full border border-line bg-white/[0.02] px-4 py-2 text-sm text-text/80 transition-colors duration-150 hover:border-line-strong hover:bg-white/[0.06] hover:text-text animate-rise',
+              'pressable shrink-0 rounded-full border border-line bg-veil/[0.02] px-4 py-2 text-sm text-text/80 transition-colors duration-150 hover:border-line-strong hover:bg-veil/[0.06] hover:text-text animate-rise',
             )}
             style={{ animationDelay: `${i * 30}ms` }}
           >
@@ -90,11 +90,11 @@ export default function StorePage() {
         ))}
       </div>
 
-      <GameRail title="New & noteworthy" eyebrow="Just opened" href="/market/browse?sort=newest" games={games.slice(0, 10)} owned={owned} />
-      <GameRail title="Free to play" eyebrow="No wallet needed" href="/market/browse?price=free" games={free} owned={owned} />
-      <GameRail title="Under 0.5 SOL" eyebrow="Pocket money" href="/market/browse?price=paid&sort=price_asc" games={budget} owned={owned} />
+      <GameRail title="New & noteworthy" eyebrow="Just opened" href="/browse?sort=newest" games={games.slice(0, 10)} owned={owned} />
+      <GameRail title="Free to play" eyebrow="No wallet needed" href="/browse?price=free" games={free} owned={owned} />
+      <GameRail title="Under 0.5 SOL" eyebrow="Pocket money" href="/browse?price=paid&sort=price_asc" games={budget} owned={owned} />
       {topGenres.map(({ genre }) => (
-        <GameRail key={genre} title={titleCase(genre)} eyebrow="Genre" href={`/market/browse?genre=${genre}`} games={games.filter((g) => g.genres.includes(genre))} owned={owned} />
+        <GameRail key={genre} title={titleCase(genre)} eyebrow="Genre" href={`/browse?genre=${genre}`} games={games.filter((g) => g.genres.includes(genre))} owned={owned} />
       ))}
       <Studios games={games} />
     </div>

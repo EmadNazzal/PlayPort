@@ -20,5 +20,5 @@ export const RequireAuth = ({ children }: { children: ReactNode }) => {
       </div>
     );
   }
-  return token ? children : <Navigate to="/market" replace />;
+  return token ? children : <Navigate to="/" replace />;
 };

@@ -102,7 +102,7 @@ export default function BrowsePage() {
             <p className="eyebrow mb-3">Studio</p>
             <div className="flex flex-col items-start gap-1">
               {studios.map(([slug, name]) => (
-                <button key={slug} type="button" onClick={() => set('partner', slug)} className={cn('rounded-lg px-2 py-1 text-left text-sm transition-colors duration-150', filter.partner === slug ? 'bg-white/[0.08] text-text' : 'text-muted hover:text-text')}>
+                <button key={slug} type="button" onClick={() => set('partner', slug)} className={cn('rounded-lg px-2 py-1 text-left text-sm transition-colors duration-150', filter.partner === slug ? 'bg-veil/[0.08] text-text' : 'text-muted hover:text-text')}>
                   {name}
                 </button>
               ))}
@@ -115,7 +115,7 @@ export default function BrowsePage() {
             <div className="flex flex-wrap items-center gap-2">
               <span className="font-mono text-xs text-faint">{games.length} results</span>
               {active.map((k) => (
-                <button key={k} type="button" onClick={() => set(k, null)} className="pressable inline-flex items-center gap-1 rounded-full bg-white/[0.06] px-2.5 py-1 text-xs text-text/80 hover:bg-white/[0.1]">
+                <button key={k} type="button" onClick={() => set(k, null)} className="pressable inline-flex items-center gap-1 rounded-full bg-veil/[0.06] px-2.5 py-1 text-xs text-text/80 hover:bg-veil/[0.1]">
                   {k === 'partner' ? (studios.find(([s]) => s === params.get(k))?.[1] ?? params.get(k)) : titleCase(params.get(k)!)} <X className="size-3" />
                 </button>
               ))}

@@ -12,7 +12,7 @@ import { useSession } from '@/lib/session';
 import { useWalletActions } from './useWalletActions';
 import { WalletPicker } from './WalletPicker';
 
-const menuItem = 'flex cursor-default items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm text-text/85 outline-none data-[highlighted]:bg-white/[0.07] data-[highlighted]:text-text';
+const menuItem = 'flex cursor-default items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm text-text/85 outline-none data-[highlighted]:bg-veil/[0.07] data-[highlighted]:text-text';
 
 /** Connected-wallet chip. Solana purple appears here and only here, as a 1px ring. */
 export const WalletChip = () => {
@@ -25,7 +25,7 @@ export const WalletChip = () => {
     return (
       <>
         <Button intent="ghost" size="sm" onClick={() => setPicking(true)}>
-          <Wallet /> <span className="hidden sm:inline">Connect</span>
+          <Wallet /> <span className="hidden md:inline">Connect</span>
         </Button>
         <Dialog open={picking} onOpenChange={setPicking} title="Connect a wallet" description="Connecting only shares your address. You'll sign when you pay or link it.">
           <div className="mt-6">
@@ -63,7 +63,7 @@ export const WalletChip = () => {
               <p className="text-xs text-muted">{wallet?.adapter.name}</p>
               <p className="mt-0.5 font-mono text-[13px]">{shortAddress(address, 6)}</p>
               {token && (
-                <p className={`mt-2 inline-flex items-center gap-1.5 rounded-md px-1.5 py-0.5 text-[11px] ${isLinked ? 'bg-go/10 text-go' : 'bg-lantern/10 text-lantern'}`}>
+                <p className={`mt-2 inline-flex items-center gap-1.5 rounded-md px-1.5 py-0.5 text-[11px] ${isLinked ? 'bg-go/10 text-go-fg' : 'bg-lantern/10 text-lantern-fg'}`}>
                   {isLinked ? 'Linked to your account' : 'Not linked yet'}
                 </p>
               )}
@@ -79,7 +79,7 @@ export const WalletChip = () => {
               <Copy className="size-4 text-muted" /> Copy address
             </Menu.Item>
             {token && (
-              <Menu.Item className={menuItem} render={<Link to="/account#wallets" />}>
+              <Menu.Item className={menuItem} render={<Link to="/player/wallets" />}>
                 <Link2 className="size-4 text-muted" /> Manage wallets
               </Menu.Item>
             )}

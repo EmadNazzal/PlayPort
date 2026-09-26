@@ -9,10 +9,10 @@ export const buttonStyles = cva(
     variants: {
       intent: {
         /** The money button: buy, confirm, continue. */
-        go: 'bg-go text-ink hover:bg-[#3cf5a9] shadow-[0_0_0_1px_rgb(20_241_149/0.4),0_8px_30px_-8px_rgb(20_241_149/0.5)]',
-        primary: 'bg-text text-ink hover:bg-white',
-        ghost: 'bg-white/[0.04] text-text ring-1 ring-inset ring-line-strong hover:bg-white/[0.08]',
-        quiet: 'text-muted hover:text-text hover:bg-white/[0.05]',
+        go: 'bg-go text-on-go hover:bg-[#3cf5a9] shadow-[0_0_0_1px_rgb(20_241_149/0.4),0_8px_30px_-8px_rgb(20_241_149/0.5)]',
+        primary: 'bg-text text-ink hover:opacity-90',
+        ghost: 'bg-veil/[0.04] text-text ring-1 ring-inset ring-line-strong hover:bg-veil/[0.08]',
+        quiet: 'text-muted hover:text-text hover:bg-veil/[0.05]',
         danger: 'bg-danger/10 text-danger ring-1 ring-inset ring-danger/30 hover:bg-danger/20',
       },
       size: {

@@ -40,7 +40,7 @@ export default function GameDetailPage() {
       <div className="mx-auto max-w-xl px-4 py-32 text-center">
         <p className="font-display text-3xl font-semibold">This stall is closed.</p>
         <p className="mt-2 text-muted">The game may have been unpublished.</p>
-        <Link to="/market" className="mt-6 inline-block text-sm text-go">Back to the store</Link>
+        <Link to="/" className="mt-6 inline-block text-sm text-go-fg">Back to the store</Link>
       </div>
     );
   }
@@ -62,7 +62,7 @@ export default function GameDetailPage() {
   };
 
   const primary = () => {
-    if (!token) return showAuth({ returnTo: `/market/games/${game.slug}` });
+    if (!token) return showAuth({ returnTo: `/games/${game.slug}` });
     if (owned) return play();
     if (isFree(game.priceLamports)) {
       return claim.mutate(game.id, {
@@ -83,11 +83,11 @@ export default function GameDetailPage() {
         </motion.div>
         <div className="absolute inset-0 -z-10 bg-gradient-to-t from-ink via-ink/50 to-ink/10" />
         <div className="mx-auto flex h-full max-w-[1400px] flex-col justify-between px-4 pt-6 pb-10 sm:px-8">
-          <Link to="/market" className="inline-flex w-fit items-center gap-1.5 rounded-full bg-ink/50 px-3 py-1.5 text-sm text-text/80 backdrop-blur-md transition-colors duration-150 hover:text-text">
+          <Link to="/" className="inline-flex w-fit items-center gap-1.5 rounded-full bg-ink/50 px-3 py-1.5 text-sm text-text/80 backdrop-blur-md transition-colors duration-150 hover:text-text">
             <ArrowLeft className="size-4" /> Store
           </Link>
           <div>
-            <Link to={`/market/browse?partner=${game.partner.slug}`} className="eyebrow text-text/70 hover:text-text">
+            <Link to={`/browse?partner=${game.partner.slug}`} className="eyebrow text-text/70 hover:text-text">
               {game.partner.name}
             </Link>
             <h1 className="mt-3 max-w-4xl text-[clamp(2.8rem,8vw,7rem)] leading-[0.86] font-bold tracking-[-0.045em] uppercase [font-variation-settings:'wdth'_76] animate-rise">{game.title}</h1>
@@ -103,7 +103,7 @@ export default function GameDetailPage() {
             <p className="max-w-2xl text-lg leading-relaxed text-text/85">{game.description ?? game.shortDescription}</p>
             <div className="mt-6 flex flex-wrap gap-2">
               {game.genres.map((g) => (
-                <Link key={g} to={`/market/browse?genre=${g}`} className="pressable rounded-full border border-line px-3 py-1.5 text-[13px] text-text/80 transition-colors duration-150 hover:border-line-strong hover:text-text">
+                <Link key={g} to={`/browse?genre=${g}`} className="pressable rounded-full border border-line px-3 py-1.5 text-[13px] text-text/80 transition-colors duration-150 hover:border-line-strong hover:text-text">
                   {titleCase(g)}
                 </Link>
               ))}
@@ -132,7 +132,7 @@ export default function GameDetailPage() {
               <p className="eyebrow mb-3">Released</p>
               <p className="text-sm">{game.publishedAt ? formatDate(game.publishedAt) : '—'}</p>
               <p className="eyebrow mt-4 mb-1">Studio</p>
-              <Link to={`/market/browse?partner=${game.partner.slug}`} className="text-sm hover:text-go">
+              <Link to={`/browse?partner=${game.partner.slug}`} className="text-sm hover:text-go-fg">
                 {game.partner.name}
               </Link>
             </div>
@@ -144,7 +144,7 @@ export default function GameDetailPage() {
             <div className="flex items-start justify-between">
               <Price lamports={game.priceLamports} size="lg" showFiat />
               {owned && (
-                <span className="inline-flex items-center gap-1 rounded-md bg-go/10 px-2 py-1 text-xs font-medium text-go">
+                <span className="inline-flex items-center gap-1 rounded-md bg-go/10 px-2 py-1 text-xs font-medium text-go-fg">
                   <Check className="size-3.5" /> In your library
                 </span>
               )}

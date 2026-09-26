@@ -10,8 +10,8 @@ type Props = { game: Game; owned?: boolean; className?: string; priority?: boole
 
 /** Title, studio and price are always visible — never hidden behind hover. */
 export const GameCard = ({ game, owned, className }: Props) => (
-  <Link to={`/market/games/${game.slug}`} className={cn('group block outline-offset-4', className)}>
-    <div className="relative aspect-[2/3] overflow-hidden rounded-2xl bg-surface ring-1 ring-white/[0.07] transition-[transform,box-shadow] duration-250 ease-(--ease-out) [@media(hover:hover)]:group-hover:-translate-y-1 [@media(hover:hover)]:group-hover:shadow-[0_24px_50px_-20px_rgb(0_0_0/0.9)] [@media(hover:hover)]:group-hover:ring-white/20">
+  <Link to={`/games/${game.slug}`} className={cn('group block outline-offset-4', className)}>
+    <div className="relative aspect-[2/3] overflow-hidden rounded-2xl bg-surface ring-1 ring-veil/[0.07] transition-[transform,box-shadow] duration-250 ease-(--ease-out) [@media(hover:hover)]:group-hover:-translate-y-1 [@media(hover:hover)]:group-hover:shadow-[0_24px_50px_-20px_rgb(0_0_0/0.9)] [@media(hover:hover)]:group-hover:ring-veil/20">
       <div className="h-full w-full transition-transform duration-500 ease-(--ease-out) [@media(hover:hover)]:group-hover:scale-[1.04]">
         <GameCover game={game} />
       </div>
@@ -25,7 +25,7 @@ export const GameCard = ({ game, owned, className }: Props) => (
         </p>
       </div>
       {owned ? (
-        <span className="mt-0.5 inline-flex shrink-0 items-center gap-1 rounded-md bg-go/10 px-1.5 py-0.5 text-[11px] font-semibold text-go">
+        <span className="mt-0.5 inline-flex shrink-0 items-center gap-1 rounded-md bg-go/10 px-1.5 py-0.5 text-[11px] font-semibold text-go-fg">
           <Check className="size-3" strokeWidth={3} /> Owned
         </span>
       ) : (

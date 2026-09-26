@@ -17,7 +17,7 @@ PlayPort/
 │       ├── games/        # catalog and review workflow
 │       ├── payments/     # SOL purchases verified on-chain
 │       └── admin/        # users, roles, reviews, audit log
-├── frontend/             # React + Vite storefront: landing, market, checkout, library
+├── frontend/             # React + Vite app: marketplace, player area, studio (partner) area
 ├── docs/best-practices/  # how we write backend TypeScript and React
 └── .claude/skills/       # AI agent skills (solana.new), usable from Claude Code
 ```

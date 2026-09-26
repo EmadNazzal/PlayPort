@@ -35,7 +35,7 @@ const Row = ({ label, children }: { label: string; children: React.ReactNode }) 
 
 /** Draws a check mark — the one celebratory moment in checkout. */
 const Success = () => (
-  <svg viewBox="0 0 52 52" className="size-16 text-go" aria-hidden>
+  <svg viewBox="0 0 52 52" className="size-16 text-go-fg" aria-hidden>
     <circle className="draw" pathLength={1} cx="26" cy="26" r="24" fill="none" stroke="currentColor" strokeWidth="2" />
     <path className="draw" pathLength={1} style={{ ['--draw-delay' as string]: '350ms' }} d="M15 27l7 7 15-15" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
@@ -153,7 +153,7 @@ export const CheckoutDialog = ({ game, open, onOpenChange, onPlay }: Props) => {
                   </div>
                   {!walletsLoading && !isLinked && (
                     <div className="flex items-center justify-between gap-3 rounded-xl bg-lantern/[0.08] p-3 text-sm">
-                      <span className="text-lantern">Link this wallet to your account first — it’s how we know the payment is yours.</span>
+                      <span className="text-lantern-fg">Link this wallet to your account first — it’s how we know the payment is yours.</span>
                       <Button size="sm" intent="primary" loading={linking} onClick={() => void link()}>
                         Link
                       </Button>

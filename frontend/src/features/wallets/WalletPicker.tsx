@@ -43,7 +43,7 @@ export const WalletPicker = ({ onPick, cta = 'Sign a message to continue — it 
               href={w.url}
               target="_blank"
               rel="noreferrer"
-              className="pressable flex items-center justify-between rounded-2xl border border-line bg-white/[0.02] px-4 py-3 text-sm hover:border-line-strong hover:bg-white/[0.05]"
+              className="pressable flex items-center justify-between rounded-2xl border border-line bg-veil/[0.02] px-4 py-3 text-sm hover:border-line-strong hover:bg-veil/[0.05]"
             >
               {w.name}
               <ArrowUpRight className="size-4 text-muted" />
@@ -64,7 +64,7 @@ export const WalletPicker = ({ onPick, cta = 'Sign a message to continue — it 
               disabled={busy !== null}
               onClick={() => void pick(adapter.name)}
               className={cn(
-                'pressable group flex w-full items-center gap-3 rounded-2xl border border-line bg-white/[0.02] px-3 py-3 text-left transition-colors duration-150 hover:border-line-strong hover:bg-white/[0.05] disabled:opacity-60',
+                'pressable group flex w-full items-center gap-3 rounded-2xl border border-line bg-veil/[0.02] px-3 py-3 text-left transition-colors duration-150 hover:border-line-strong hover:bg-veil/[0.05] disabled:opacity-60',
                 busy === adapter.name && 'border-go/40 bg-go/[0.06] opacity-100',
               )}
             >
@@ -73,7 +73,7 @@ export const WalletPicker = ({ onPick, cta = 'Sign a message to continue — it 
                 <span className="block text-[15px] font-medium">{adapter.name}</span>
                 <span className="block text-xs text-muted">{busy === adapter.name ? 'Check your wallet…' : 'Detected'}</span>
               </span>
-              {busy === adapter.name ? <Spinner className="text-go" /> : <ChevronRight className="size-4 text-faint transition-transform duration-150 group-hover:translate-x-0.5" />}
+              {busy === adapter.name ? <Spinner className="text-go-fg" /> : <ChevronRight className="size-4 text-faint transition-transform duration-150 group-hover:translate-x-0.5" />}
             </button>
           </li>
         ))}

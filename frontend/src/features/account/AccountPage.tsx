@@ -87,7 +87,7 @@ const Wallets = () => {
               <div className="min-w-0 flex-1">
                 <p className="flex items-center gap-2 font-mono text-sm">
                   {shortAddress(w.address, 6)}
-                  {w.isPrimary && <span className="rounded-md bg-go/10 px-1.5 py-0.5 font-sans text-[11px] text-go">Primary</span>}
+                  {w.isPrimary && <span className="rounded-md bg-go/10 px-1.5 py-0.5 font-sans text-[11px] text-go-fg">Primary</span>}
                 </p>
                 <p className="text-xs text-muted">
                   {w.label ?? 'Solana wallet'} · linked {formatDate(w.createdAt)}
@@ -156,7 +156,7 @@ const Purchases = () => {
           <span
             className={cn(
               'rounded-md px-2 py-0.5 text-[11px] capitalize',
-              p.status === 'confirmed' ? 'bg-go/10 text-go' : p.status === 'pending' ? 'bg-lantern/10 text-lantern' : 'bg-white/5 text-muted',
+              p.status === 'confirmed' ? 'bg-go/10 text-go-fg' : p.status === 'pending' ? 'bg-lantern/10 text-lantern-fg' : 'bg-veil/5 text-muted',
             )}
           >
             {p.status}
@@ -186,7 +186,7 @@ export default function AccountPage() {
       <h1 className="text-[clamp(2.2rem,4.5vw,3.5rem)] leading-none font-bold tracking-[-0.035em] [font-variation-settings:'wdth'_85]">{me?.displayName ?? 'Your account'}</h1>
       <p className="mt-3 text-sm text-muted">
         {me?.email ?? 'Wallet account'}
-        {me?.email && !me.emailVerifiedAt && <span className="ml-2 rounded-md bg-lantern/10 px-1.5 py-0.5 text-[11px] text-lantern">Unverified</span>}
+        {me?.email && !me.emailVerifiedAt && <span className="ml-2 rounded-md bg-lantern/10 px-1.5 py-0.5 text-[11px] text-lantern-fg">Unverified</span>}
       </p>
       <div className="mt-10">
         <Section title="Profile" description="How other players see you.">

@@ -10,7 +10,7 @@ export const Price = ({ lamports, className, showFiat = false, size = 'sm' }: Pr
   const usd = useSolPrice();
   if (isFree(lamports)) {
     return (
-      <span className={cn('inline-flex items-center rounded-md bg-lantern/12 px-1.5 py-0.5 font-mono text-[11px] font-semibold tracking-wider text-lantern uppercase', size === 'lg' && 'px-2.5 py-1 text-sm', className)}>
+      <span className={cn('inline-flex items-center rounded-md bg-lantern/12 px-1.5 py-0.5 font-mono text-[11px] font-semibold tracking-wider text-lantern-fg uppercase', size === 'lg' && 'px-2.5 py-1 text-sm', className)}>
         Free
       </span>
     );

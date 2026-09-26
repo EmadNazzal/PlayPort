@@ -4,6 +4,7 @@ import { RouterProvider } from 'react-router';
 import { Toaster } from 'sonner';
 import { ApiError, refreshSession } from '@/lib/api';
 import { useSession } from '@/lib/session';
+import { useTheme } from '@/lib/theme';
 import { SolanaProviders } from '@/features/wallets/solana';
 import { router } from './router';
 
@@ -25,12 +26,13 @@ const useBootSession = () => {
 
 export const App = () => {
   useBootSession();
+  const theme = useTheme((s) => s.theme);
   return (
     <QueryClientProvider client={queryClient}>
       <SolanaProviders>
         <RouterProvider router={router} />
         <Toaster
-          theme="dark"
+          theme={theme}
           position="bottom-right"
           toastOptions={{
             style: {

@@ -26,7 +26,7 @@ export const Dialog = ({ open, onOpenChange, title, description, children, class
       >
         <BaseDialog.Title className={cn('pr-8 font-display text-2xl font-semibold tracking-[-0.02em]', hideTitle && 'sr-only')}>{title}</BaseDialog.Title>
         {description && <BaseDialog.Description className="mt-1.5 text-sm text-muted">{description}</BaseDialog.Description>}
-        <BaseDialog.Close className="pressable absolute top-5 right-5 grid size-8 place-items-center rounded-full text-muted hover:bg-white/5 hover:text-text" aria-label="Close">
+        <BaseDialog.Close className="pressable absolute top-5 right-5 grid size-8 place-items-center rounded-full text-muted hover:bg-veil/5 hover:text-text" aria-label="Close">
           <X className="size-4" />
         </BaseDialog.Close>
         {children}
